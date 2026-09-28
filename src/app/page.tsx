@@ -1,6 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Activity, ClipboardList, Utensils, TrendingUp } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 // --- CLINIXBRIDGE DATA & RULES ---
 const SAMPLE = { hb: 11.2, ferritin: 14, vitd: 16, b12: 182, folate: 6.1, ca: 9.1, mg: 1.6, zinc: 64, alb: 4.1 };
@@ -52,13 +54,54 @@ export default function ClinixBridgeApp() {
   const [activeTab, setActiveTab] = useState("report");
   const [currentUser, setCurrentUser] = useState("Neel");
   const [showUsers, setShowUsers] = useState(false);
-  const PATIENTS = ["Neel", "Priya", "Dr. Kailash"];
+  const [savedAccounts, setSavedAccounts] = useState<string[]>([]);
+  const [currentUserEmail, setCurrentUserEmail] = useState("");
+  const router = useRouter();
+
   const [sex, setSex] = useState("M");
   const [diet, setDiet] = useState("v");
   const [weight, setWeight] = useState("58");
   const [activity, setActivity] = useState("everyday");
   const [vals, setVals] = useState<any>({ ...SAMPLE });
   const [pm, setPm] = useState("vitd"); 
+
+  const fetchReports = async () => {
+    const { data, error } = await supabase
+      .from('reports')
+      .select('*')
+      .order('created_at', { ascending: false });
+      
+    if (data && data.length > 0) {
+      console.log('Securely fetched isolated patient data:', data);
+      // Data hydration logic goes here later
+    }
+  };
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push("/login");
+      } else {
+        const email = session.user.email || "Doctor";
+        setCurrentUserEmail(email);
+        const name = email.split("@")[0];
+        setCurrentUser(name.charAt(0).toUpperCase() + name.slice(1));
+        
+        // Update saved accounts in local storage
+        const saved = JSON.parse(localStorage.getItem("clinix_saved_accounts") || "[]");
+        if (!saved.includes(email)) {
+          saved.push(email);
+          localStorage.setItem("clinix_saved_accounts", JSON.stringify(saved));
+        }
+        setSavedAccounts(saved);
+        
+        fetchReports();
+      }
+    };
+    
+    checkSession();
+  }, [router]);
 
   const pick = (v: any, sexStr: string) => typeof v === "object" ? v[sexStr] : v;
 
@@ -354,16 +397,43 @@ export default function ClinixBridgeApp() {
             <h2 className="font-display font-normal text-[25px] tracking-[-0.02em] capitalize m-0 mt-0.5">{activeTab}</h2>
             
             {showUsers && (
-              <div className="absolute top-12 left-0 bg-white border-2 border-[#111] shadow-[4px_4px_0_#111] rounded-xl overflow-hidden z-50">
-                {PATIENTS.map(patient => (
+              <div className="absolute top-12 left-0 bg-white border-2 border-[#111] shadow-[4px_4px_0_#111] rounded-xl overflow-hidden z-50 min-w-[200px]">
+                {savedAccounts.map(email => (
                   <button 
-                    key={patient}
-                    className="block w-full text-left px-5 py-3 text-[14px] font-bold hover:bg-[#F4F7FF] border-b last:border-0 border-[#111]"
-                    onClick={() => { setCurrentUser(patient); setShowUsers(false); }}
+                    key={email}
+                    className="block w-full text-left px-5 py-3 text-[13px] font-bold hover:bg-[#F4F7FF] border-b border-[#111] truncate"
+                    onClick={async () => {
+                      if (email !== currentUserEmail) {
+                        await supabase.auth.signOut();
+                        router.push("/login");
+                      } else {
+                        setShowUsers(false);
+                      }
+                    }}
                   >
-                    Switch to {patient}
+                    Switch to {email.split("@")[0]} {email === currentUserEmail && "(Active)"}
                   </button>
                 ))}
+                
+                <button 
+                  className="block w-full text-left px-5 py-3 text-[13px] font-bold border-b border-[#111] hover:bg-[#F4F7FF]"
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    router.push("/login");
+                  }}
+                >
+                  + Add another account
+                </button>
+                
+                <button 
+                  className="block w-full text-left px-5 py-3 text-[13px] font-bold text-[#FF5A36] hover:bg-[#FFE9E6]"
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    router.push("/login");
+                  }}
+                >
+                  Sign Out {currentUser}
+                </button>
               </div>
             )}
           </div>
