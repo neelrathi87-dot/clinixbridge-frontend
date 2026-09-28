@@ -142,7 +142,7 @@ export default function ClinixBridgeApp() {
         </div>
         
         <p className="text-[12px] text-[#4A4A55] m-0">
-          Every home's katori and glass is a different size, so Kami shows protein as levels, not grams.
+          Every home&apos;s katori and glass is a different size, so Kami shows protein as levels, not grams.
         </p>
       </div>
 
@@ -352,10 +352,6 @@ export default function ClinixBridgeApp() {
               Hey {currentUser} · {diet === "v" ? "Veg" : diet === "e" ? "Eggetarian" : "Non-veg"}
             </div>
             <h2 className="font-[var(--font-display)] font-normal text-[25px] tracking-[-0.02em] capitalize m-0 mt-0.5">{activeTab}</h2>
-          </div>
-          <div className="w-[40px] h-[40px] rounded-[13px] bg-[#B69CFF] border-[2.5px] border-[#111] shadow-[2px_2px_0_#111] flex items-center justify-center font-[var(--font-display)] text-[15px]">
-            {currentUser ? currentUser[0].toUpperCase() : "P"}
-          </div>
             
             {showUsers && (
               <div className="absolute top-12 left-0 bg-white border-2 border-[#111] shadow-[4px_4px_0_#111] rounded-xl overflow-hidden z-50">
@@ -371,8 +367,8 @@ export default function ClinixBridgeApp() {
               </div>
             )}
           </div>
-          <div className="w-11 h-11 rounded-xl bg-[#C1A5FF] border-2 border-[#111] shadow-[3px_3px_0_#111] flex items-center justify-center font-[var(--font-display)] text-[18px]">
-            {currentUser.charAt(0)}
+          <div className="w-[40px] h-[40px] rounded-[13px] bg-[#B69CFF] border-[2.5px] border-[#111] shadow-[2px_2px_0_#111] flex items-center justify-center font-[var(--font-display)] text-[15px]">
+            {currentUser ? currentUser[0].toUpperCase() : "P"}
           </div>
         </div>
 
