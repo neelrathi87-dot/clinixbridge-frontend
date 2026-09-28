@@ -325,7 +325,15 @@ export default function ClinixBridgeApp() {
             </div>
             
             <h1 className="font-[var(--font-display)] font-normal text-[clamp(30px,9vw,42px)] leading-[1.02] tracking-[-0.03em] m-0 text-[#111] text-balance">
-              Your blood report, turned into <span className="bg-[#FFD23F] px-[0.12em] border-[2.5px] border-[#111] rounded-[0.18em] shadow-[4px_4px_0_#111] box-decoration-clone leading-[1.25]">tomorrow's breakfast.</span> Not <span className="relative text-[#77778A] after:content-[''] after:absolute after:-left-[4%] after:-right-[4%] after:top-[50%] after:h-[0.13em] after:bg-[#FF5A36] after:-rotate-[7deg] after:rounded-[4px]">pills</span>.
+              Your blood report, turned into{" "}
+              <span className="bg-[#FFD23F] px-[0.12em] border-[2.5px] border-[#111] rounded-[0.18em] shadow-[4px_4px_0_#111] box-decoration-clone leading-[1.25]">
+                tomorrow&apos;s breakfast.
+              </span>{" "}
+              Not{" "}
+              <span className="relative text-[#77778A]">
+                <span className="absolute -left-[4%] -right-[4%] top-[50%] h-[0.13em] bg-[#FF5A36] -rotate-[7deg] rounded-[4px]" />
+                pills
+              </span>.
             </h1>
             
             <p className="text-[14px] text-[#4A4A55] font-[var(--font-body)] m-0">
