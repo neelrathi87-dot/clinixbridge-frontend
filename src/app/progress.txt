@@ -1,0 +1,224 @@
+  // --- TAB 4: PROGRESS ---
+  const renderProgress = () => {
+    const reps = SAMPLE_HISTORY;
+    if (!reps.length) {
+      return <div className="bg-[var(--card)] border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)] rounded-[20px] p-[15px]">Save your first report on the Report tab to start tracking.</div>;
+    }
+    const first = reps[0];
+    const last = reps[reps.length - 1];
+    const rows = MARKERS.map(m => {
+      const a = (first.vals as any)[m.id];
+      const b = (last.vals as any)[m.id];
+      if (a == null || b == null || a === "" || b === "") return null;
+      const better = distOut(m, b, sex) < distOut(m, a, sex);
+      const worse = distOut(m, b, sex) > distOut(m, a, sex);
+      return { m, a, b, pct: a ? ((b - a) / a * 100) : 0, dir: better ? "up" : worse ? "down" : "flat" };
+    }).filter(Boolean);
+
+    const improved = rows.filter(r => r?.dir === "up").length;
+    const bestRows = rows.filter(r => r?.dir === "up").sort((p: any, q: any) => Math.abs(q.pct) - Math.abs(p.pct));
+    const best = bestRows.length > 0 ? bestRows[0] : null;
+
+    const lastD = new Date(last.date + "T00:00:00");
+    const next = new Date(lastD.getTime() + 90 * 864e5);
+    const now = new Date();
+    const passed = Math.min(90, Math.max(0, Math.round((now.getTime() - lastD.getTime()) / 864e5)));
+    const left = 90 - passed;
+
+    const activeMarker = MARKERS.find(m => m.id === pm) || MARKERS[0];
+
+    const weekTot = DAYN.reduce((a, _, i) => a + dayTotal(i), 0);
+    const weekDays = DAYN.filter((_, i) => [0, 1, 2, 3].some(k => amt(i + "-" + k) != null)).length;
+    const weekPct = weekDays ? Math.round(weekTot / (weekDays * 4) * 100) : 0;
+
+    const pVals = DAYN.map((_, i) => dayProtein(i)).filter(v => v > 0);
+    const pDays = pVals.length;
+
+    // lineChart logic
+    const renderLineChart = (m: any) => {
+      const pts = reps.map(r => ({ d: r.date, v: (r.vals as any)[m.id] })).filter(p => p.v !== "" && p.v != null && !isNaN(p.v));
+      const W = 320, H = 180, L = 14, R = 14, T = 26, B = 28;
+      const lo = pick(m.low, sex);
+      const hi = pick(m.hi, sex);
+      const vs = pts.map(p => p.v);
+      let mn = Math.min(...vs, lo);
+      let mx = Math.max(...vs, lo);
+      const pad = (mx - mn || lo * .2) * .35;
+      mn = Math.max(0, mn - pad);
+      mx = mx + pad;
+      const y = (v: number) => T + (1 - (v - mn) / (mx - mn)) * (H - T - B);
+      const x = (i: number) => pts.length < 2 ? W / 2 : L + 18 + i * ((W - L - R - 36) / (pts.length - 1));
+      const bandTop = y(Math.min(hi, mx));
+      const bandBot = y(lo);
+      const path = pts.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ");
+      const area = pts.length > 1 ? `${path} L${x(pts.length - 1).toFixed(1)},${H - B} L${x(0).toFixed(1)},${H - B} Z` : "";
+
+      return (
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${m.name} across ${pts.length} reports`} className="w-full h-auto block mt-2">
+          <defs>
+            <linearGradient id="lg" x1="0" x2="1">
+              <stop offset="0" stopColor="#FF7A45" />
+              <stop offset=".5" stopColor="#FF4D8D" />
+              <stop offset="1" stopColor="#8D6CFF" />
+            </linearGradient>
+            <linearGradient id="ag" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stopColor="#FF4D8D" stopOpacity=".28" />
+              <stop offset="1" stopColor="#FF4D8D" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <rect x={L} y={bandTop} width={W - L - R} height={Math.max(0, bandBot - bandTop)} fill="rgba(51,214,159,.16)" />
+          <line x1={L} x2={W - R} y1={bandBot} y2={bandBot} stroke="#33D69F" strokeOpacity=".7" strokeDasharray="4 4" />
+          <text x={W - R} y={bandBot - 6} textAnchor="end" fill="#0E9F6E" fontFamily="Space Mono, monospace" fontSize="9.5" fontWeight="700">NORMAL ≥ {lo}</text>
+          {area && <path d={area} fill="url(#ag)" />}
+          <path d={path} fill="none" stroke="url(#lg)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          {pts.map((p, i) => {
+            const isLast = i === pts.length - 1;
+            return (
+              <g key={i}>
+                <circle cx={x(i)} cy={y(p.v)} r={isLast ? 6.5 : 4.5} fill={isLast ? "#FFD23F" : "#FFFFFF"} stroke={isLast ? "#FF4D8D" : "#444444"} strokeWidth={isLast ? 3.5 : 2} />
+                <text x={x(i)} y={y(p.v) - 12} textAnchor="middle" fill={isLast ? "#111111" : "#444444"} fontFamily="Space Mono, monospace" fontSize="11" fontWeight="700">{p.v}</text>
+                <text x={x(i)} y={H - 8} textAnchor="middle" fill="#6A6A7A" fontFamily="Outfit, sans-serif" fontSize="10.5" fontWeight="700">{fmtD(p.d)}</text>
+              </g>
+            );
+          })}
+        </svg>
+      );
+    };
+
+    // weekChart logic
+    const renderWeekChart = () => {
+      const W = 320, H = 120, L = 8, R = 8, T = 18, B = 22, bw = 26, gap = (W - L - R - bw * 7) / 6;
+      return (
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Meals followed per day this week" className="w-full h-auto block mt-2">
+          <defs>
+            <linearGradient id="lg2" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stopColor="#FF4D8D" />
+              <stop offset="1" stopColor="#8D6CFF" />
+            </linearGradient>
+          </defs>
+          {DAYN.map((d, i) => {
+            const t = dayTotal(i);
+            const c = Math.round(t / 4 * 100);
+            const x = L + i * (bw + gap);
+            const full = H - T - B;
+            const h = Math.max(3, full * Math.min(1, t / 4));
+            return (
+              <g key={i}>
+                <rect x={x} y={T} width={bw} height={full} rx="8" fill="rgba(17,17,17,.06)" />
+                <rect x={x} y={T + full - h} width={bw} height={h} rx="8" fill={t ? "url(#lg2)" : "rgba(17,17,17,.1)"} />
+                <text x={x + bw / 2} y={T - 6} textAnchor="middle" fill={t ? "#111111" : "#6A6A7A"} fontFamily="Space Mono, monospace" fontSize="10" fontWeight="700">{c}%</text>
+                <text x={x + bw / 2} y={H - 6} textAnchor="middle" fill={i === day ? "#111111" : "#6A6A7A"} fontFamily="Outfit, sans-serif" fontSize="10.5" fontWeight="800">{d}</text>
+              </g>
+            );
+          })}
+        </svg>
+      );
+    };
+
+    // proteinChart logic
+    const renderProteinChart = () => {
+      const W = 320, H = 140, L = 8, R = 8, T = 20, B = 22, bw = 26, gap = (W - L - R - bw * 7) / 6, tg = target();
+      const vals = DAYN.map((_, i) => dayProtein(i));
+      const mx = Math.max(tg * 1.3, ...vals);
+      const full = H - T - B;
+      const y = (v: number) => T + full - full * v / mx;
+      const ty = y(tg);
+      return (
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Protein level per day this week compared with your goal" className="w-full h-auto block mt-2">
+          <defs>
+            <linearGradient id="pg2" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stopColor="#FF4D8D" />
+              <stop offset="1" stopColor="#8D6CFF" />
+            </linearGradient>
+          </defs>
+          {vals.map((v, i) => {
+            const x = L + i * (bw + gap);
+            const h = Math.max(3, full * v / mx);
+            const hit = v >= tg * .9;
+            return (
+              <g key={i}>
+                <rect x={x} y={T} width={bw} height={full} rx="8" fill="rgba(17,17,17,.06)" />
+                <rect x={x} y={T + full - h} width={bw} height={h} rx="8" fill={v ? (hit ? "#33D69F" : "url(#pg2)") : "rgba(17,17,17,.1)"} />
+                <text x={x + bw / 2} y={H - 6} textAnchor="middle" fill={i === day ? "#111111" : "#6A6A7A"} fontFamily="Outfit, sans-serif" fontSize="10.5" fontWeight="800">{DAYN[i]}</text>
+              </g>
+            );
+          })}
+          <line x1={L} x2={W - R} y1={ty} y2={ty} stroke="#111111" strokeOpacity=".55" strokeDasharray="4 4" />
+          <text x={W - R} y={ty - 5} textAnchor="end" fill="#111111" fillOpacity=".75" fontFamily="Space Mono, monospace" fontSize="9.5" fontWeight="700">YOUR GOAL</text>
+        </svg>
+      );
+    };
+
+    return (
+      <div className="grid gap-[14px] pb-6 content-start">
+        <div className="bg-[var(--card)] border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)] rounded-[20px] p-[15px]">
+          <span className="text-[11px] font-[800] tracking-[0.1em] uppercase text-[var(--ink)] block mb-1">Since {fmtLong(new Date(first.date + "T00:00:00"))} · {reps.length} reports</span>
+          <div className="font-display font-[400] text-[28px] leading-[1.05] mb-2">
+            <em className="not-italic bg-white px-1.5 rounded-[8px] border-[2px] border-[var(--ink)]">{improved} of {rows.length}</em> markers moving the right way
+          </div>
+          <p className="text-[14px] m-0 text-[#4A4A55]">{best ? `Biggest win: ${best.m.name} up ${Math.round(best.pct as number)}%, from ${best.a} to ${best.b} ${best.m.unit}.` : "Upload your next report to see what moved."}</p>
+        </div>
+
+        <div className="bg-[var(--card)] border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)] rounded-[20px] p-[15px]">
+          <div className="flex justify-between items-baseline mb-[14px]">
+            <b className="font-display font-[400] text-[18px]">{activeMarker.name}</b>
+            <span className="text-[11px] font-[800] tracking-[0.1em] uppercase text-[var(--ink)]">{activeMarker.unit}</span>
+          </div>
+          <div className="flex gap-[6px] overflow-x-auto pb-[6px] mb-2" style={{ scrollbarWidth: "none" }} role="group" aria-label="Marker">
+            {MARKERS.map(m => (
+              <button 
+                key={m.id} 
+                onClick={() => setPm(m.id)}
+                className={`flex-none border-[2px] border-[#111] rounded-full px-[10px] py-[4px] text-[12px] font-[800] ${pm === m.id ? "bg-[#111] text-white" : "bg-white"}`}
+              >
+                {m.name}
+              </button>
+            ))}
+          </div>
+          {renderLineChart(activeMarker)}
+        </div>
+
+        <div className="bg-[var(--card)] border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)] rounded-[20px] p-[15px]">
+          <span className="text-[11px] font-[800] tracking-[0.1em] uppercase text-[var(--ink)] block mb-3">First report → latest</span>
+          <div className="grid gap-[10px]">
+            {rows.sort((p: any, q: any) => ({ up: 0, flat: 1, down: 2 }[p.dir as "up"|"flat"|"down"] - { up: 0, flat: 1, down: 2 }[q.dir as "up"|"flat"|"down"])).map((r: any, i: number) => (
+              <div key={i} className="flex justify-between items-center text-[13px] font-[600] pb-[10px] border-b-[2px] border-[#111] border-dashed last:border-0 last:pb-0">
+                <span className="font-display text-[15px]">{r.m.name}</span>
+                <span className="text-[#6A6A7A] ml-auto mr-3">{r.a} → {r.b}</span>
+                <span className={`px-2 py-0.5 rounded-[6px] font-[800] text-[12px] border-[2px] ${r.dir === "up" ? "bg-[#33D69F] border-[#111] text-white" : r.dir === "down" ? "bg-[#FF5A36] border-[#111] text-white" : "bg-[#F4F7FF] border-[#111] text-[#111]"}`}>
+                  {r.dir === "flat" ? "steady" : (r.pct > 0 ? "+" : "") + Math.round(r.pct) + "%"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-[var(--card)] border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)] rounded-[20px] p-[15px]">
+          <span className="text-[11px] font-[800] tracking-[0.1em] uppercase text-[var(--ink)] block mb-1">Next blood test</span>
+          <span className="block font-[800] text-[15px] mb-2">{fmtLong(next)}{left > 0 ? ` · in ${left} days` : " · due now"}</span>
+          <span className="block h-[10px] bg-[#F4F7FF] border-[2px] border-[#111] rounded-full overflow-hidden mb-3">
+            <i className="block h-full bg-[#111]" style={{ width: `${passed / 90 * 100}%` }}></i>
+          </span>
+          <small className="block text-[13px] font-[600] text-[#6A6A7A] leading-[1.3]">Iron, B12 and Vitamin D take 8 to 12 weeks to move, so ClinixBridge asks for a re-test every 3 months. We&apos;ll remind you.</small>
+        </div>
+
+        <div className="bg-[var(--card)] border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)] rounded-[20px] p-[15px]">
+          <div className="flex justify-between items-end mb-2">
+            <span className="text-[11px] font-[800] tracking-[0.1em] uppercase text-[var(--ink)]">Between tests · this week</span>
+            <span className="bg-[#111] text-white rounded-full px-2 py-0.5 text-[10px] font-[800]">{weekDays ? `${weekPct}% of plan eaten` : "Nothing logged yet"}</span>
+          </div>
+          {renderWeekChart()}
+          <p className="text-[12.5px] font-[600] text-[#6A6A7A] leading-[1.3] mt-3 mb-0 text-center">Share of each day&apos;s planned portions you ate, from the Today tab. Half a meal counts as half, extra as one and a half. This tracks food, not blood levels.</p>
+        </div>
+
+        <div className="bg-[var(--card)] border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)] rounded-[20px] p-[15px]">
+          <div className="flex justify-between items-end mb-2">
+            <span className="text-[11px] font-[800] tracking-[0.1em] uppercase text-[var(--ink)]">Protein · this week</span>
+            <span className="bg-[#111] text-white rounded-full px-2 py-0.5 text-[10px] font-[800]">{pDays ? `${DAYN.filter((_, i) => dayProtein(i) >= target() * .9).length} of 7 days on track` : "Nothing logged yet"}</span>
+          </div>
+          {renderProteinChart()}
+          <p className="text-[12.5px] font-[600] text-[#6A6A7A] leading-[1.3] mt-3 mb-0 text-center">Mint bars are days you were on track. Levels are a rough guide from what you logged, since portion sizes differ in every home.</p>
+        </div>
+      </div>
+    );
+  };

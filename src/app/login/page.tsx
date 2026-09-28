@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Login() {
-  const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,102 +22,87 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      setMessage({ text: "Please enter both an email and a password.", error: true });
-      return;
-    }
-
     setLoading(true);
     setMessage({ text: "", error: false });
-    
-    let result;
-    if (mode === "signup") {
-      result = await supabase.auth.signUp({ email, password });
-      if (result.data?.session) {
-        router.push("/");
-      } else if (result.data?.user) {
-        setMessage({ text: "Account created successfully! You can now log in.", error: false });
-        setMode("login");
-      }
-    } else {
-      result = await supabase.auth.signInWithPassword({ email, password });
-      if (result.data?.session) {
-        router.push("/");
-      }
-    }
 
-    if (result.error) {
-      setMessage({ text: result.error.message, error: true });
+    try {
+      const { error, data } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      
+      if (data?.session) {
+        // Save email to local storage for multi-tenant dropdown
+        const accountsStr = localStorage.getItem("clinix_saved_accounts") || "[]";
+        const accounts = JSON.parse(accountsStr);
+        if (!accounts.includes(email)) {
+          accounts.push(email);
+          localStorage.setItem("clinix_saved_accounts", JSON.stringify(accounts));
+        }
+        router.push("/");
+      }
+    } catch (err: any) {
+      setMessage({ text: err.message || "Failed to sign in", error: true });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-[var(--paper)] text-[var(--ink)] flex items-center justify-center font-[var(--font-body)]">
-      <div className="w-full max-w-[400px] p-6">
-        <div className="flex items-center gap-2.5 font-[var(--font-display)] text-[28px] tracking-tight mb-8 justify-center">
-          <span className="w-10 h-10 rounded-xl bg-[var(--tomato)] border-[var(--bw)] border-[var(--ink)] shadow-[3px_3px_0_var(--ink)] flex items-center justify-center text-white text-lg -rotate-6">cb</span>
-          ClinixBridge
+    <div className="min-h-screen w-full flex items-center justify-center p-4 font-body" style={{ background: "#FAFAFD" }}>
+      <div className="w-full max-w-[400px] grid gap-6">
+        <div className="text-center grid gap-2">
+          <div className="w-[50px] h-[50px] mx-auto rounded-[14px] bg-[#FF5A36] border-[2.5px] border-[#111] shadow-[3px_3px_0_#111] flex items-center justify-center text-white text-[22px] font-display -rotate-[8deg] mb-2">cb</div>
+          <h1 className="font-display text-[32px] tracking-tight m-0 leading-none">ClinixBridge</h1>
+          <p className="text-[#4A4A55] text-[15px] font-[600]">Food as medicine, without the guesswork.</p>
         </div>
-        
-        <div className="bg-white border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)] rounded-2xl p-6">
-          <h2 className="font-[var(--font-display)] text-[22px] mb-6 text-center">
-            {mode === "login" ? "Welcome Back" : "Create Account"}
-          </h2>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-[12px] font-bold text-[var(--muted)] mb-1 uppercase tracking-wider">Email</label>
-              <input 
-                type="email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full border-2 border-[var(--ink)] rounded-xl px-4 py-3 bg-[var(--paper)] font-bold text-[14px]"
-                placeholder="doctor@clinic.com"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-[12px] font-bold text-[var(--muted)] mb-1 uppercase tracking-wider">Password</label>
-              <input 
-                type="password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border-2 border-[var(--ink)] rounded-xl px-4 py-3 bg-[var(--paper)] font-bold text-[14px]"
-                placeholder="••••••••"
-                required
-                minLength={6}
-              />
-            </div>
 
-            {message.text && (
-              <div className={`p-3 rounded-xl text-[13px] font-bold border-2 border-[var(--ink)] ${message.error ? 'bg-[#FFE9E6] text-[var(--tomato)]' : 'bg-[#E3F2FF] text-[var(--sky)]'}`}>
-                {message.text}
-              </div>
-            )}
-            
-            <div className="pt-2 grid gap-3">
-              <button 
-                type="submit"
-                disabled={loading}
-                className="w-full border-[var(--bw)] border-[var(--ink)] rounded-xl py-3 font-extrabold text-[15px] bg-[var(--sun)] text-[var(--ink)] shadow-[var(--sh)] hover:-translate-y-[1px] transition-transform disabled:opacity-50"
-              >
-                {loading ? "Authenticating..." : mode === "login" ? "Sign In" : "Sign Up"}
-              </button>
-              
-              <button 
-                type="button"
-                onClick={() => {
-                  setMode(mode === "login" ? "signup" : "login");
-                  setMessage({ text: "", error: false });
-                }}
-                disabled={loading}
-                className="w-full text-[13px] font-bold text-[var(--muted)] hover:text-[var(--ink)] transition-colors mt-2"
-              >
-                {mode === "login" ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
-              </button>
+        <form onSubmit={handleSubmit} className="bg-white border-[2.5px] border-[#111] rounded-[22px] p-6 shadow-[6px_6px_0_#111] grid gap-5">
+          <div className="grid gap-1.5">
+            <label className="text-[13px] font-[800] uppercase tracking-wider text-[#111]">Email</label>
+            <input 
+              type="email" 
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full h-[48px] px-4 rounded-[12px] border-[2px] border-[#111] bg-[#FAFAFD] font-[600] text-[15px] focus:outline-none focus:ring-2 focus:ring-[#FF5A36] focus:border-transparent transition-all"
+              placeholder="you@example.com"
+            />
+          </div>
+
+          <div className="grid gap-1.5">
+            <label className="text-[13px] font-[800] uppercase tracking-wider text-[#111]">Password</label>
+            <input 
+              type="password" 
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full h-[48px] px-4 rounded-[12px] border-[2px] border-[#111] bg-[#FAFAFD] font-[600] text-[15px] focus:outline-none focus:ring-2 focus:ring-[#FF5A36] focus:border-transparent transition-all"
+              placeholder="••••••••"
+            />
+          </div>
+
+          {message.text && (
+            <div className={`p-3 rounded-[12px] border-[2px] text-[13.5px] font-[700] ${message.error ? "bg-[#FFE9E6] border-[#FF5A36] text-[#FF5A36]" : "bg-[#F4F7FF] border-[#5AB0FF] text-[#111]"}`}>
+              {message.text}
             </div>
-          </form>
+          )}
+
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="w-full h-[52px] bg-[#FF5A36] text-white font-display text-[18px] rounded-[14px] border-[2.5px] border-[#111] shadow-[3px_3px_0_#111] active:translate-y-[2px] active:translate-x-[2px] active:shadow-[1px_1px_0_#111] transition-all disabled:opacity-70 flex items-center justify-center mt-2"
+          >
+            {loading ? "Please wait..." : "Sign In"}
+          </button>
+        </form>
+
+        <div className="text-center text-[14px] font-[600] text-[#4A4A55]">
+          New here?{" "}
+          <Link href="/signup" className="text-[#FF5A36] font-[800] hover:underline underline-offset-4">
+            Create an account
+          </Link>
         </div>
       </div>
     </div>
