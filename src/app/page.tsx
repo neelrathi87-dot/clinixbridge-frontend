@@ -87,8 +87,8 @@ export default function ClinixBridgeApp() {
             if (file) alert(`Demo Mode: "${file.name}" received. Kami AI is scanning...`);
           }} 
         />
-        <div className="mx-auto w-14 h-14 bg-white border-2 border-[#111] rounded-[16px] shadow-[4px_4px_0_#111] flex items-center justify-center mb-4">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="24" height="24">
+        <div className="mx-auto w-[54px] h-[54px] bg-white border-[2.5px] border-[#111] rounded-[16px] shadow-[3px_3px_0_#111] flex items-center justify-center mb-4 -rotate-[6deg]">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="26" height="26">
             <path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/>
           </svg>
         </div>
@@ -97,71 +97,76 @@ export default function ClinixBridgeApp() {
       </label>
 
       {/* Paste Report Accordion */}
-      <button className="w-full flex items-center justify-between bg-white border-2 border-[#111] rounded-[16px] px-5 py-4 shadow-[4px_4px_0_#111] active:translate-y-[2px] active:shadow-[2px_2px_0_#111] transition-all">
-        <span className="text-[14px] font-bold text-[#111]">Or paste the report text</span>
-        <span className="text-[20px] font-bold text-[#111] leading-none">+</span>
-      </button>
+      <details className="bg-white border-[2.5px] border-[#111] rounded-[20px] p-[15px] shadow-[4px_4px_0_#111]">
+        <summary className="cursor-pointer font-[800] text-[14px] list-none flex justify-between items-center text-[#111]">
+          Or paste the report text
+        </summary>
+        <textarea 
+          className="w-full min-h-[90px] rounded-[12px] border-[2px] border-[#111] bg-[#FAFAFD] p-[10px] font-[var(--font-mono)] text-[12px] mt-2 mb-2 focus:outline-none focus:ring-2 focus:ring-[#5AB0FF] focus:border-transparent" 
+          placeholder="Haemoglobin 11.2 g/dL&#10;Vitamin D (25-OH) 16 ng/mL&#10;Vitamin B12 182 pg/mL"
+        ></textarea>
+        <button className="w-full border-[2.5px] border-[#111] rounded-[16px] p-[11px] font-[800] text-[15.5px] bg-white text-[#111] shadow-[4px_4px_0_#111] active:translate-y-[3px] active:translate-x-[3px] active:shadow-[1px_1px_0_#111] transition-all">
+          Read values
+        </button>
+      </details>
 
       {/* 2. About You Section */}
-      <div className="bg-white border-2 border-[#111] rounded-[20px] p-4 shadow-[4px_4px_0_#111] grid gap-4">
-        <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#666]">About you</span>
+      <div className="bg-white border-[2.5px] border-[#111] rounded-[20px] p-[15px] shadow-[4px_4px_0_#111] grid gap-4">
+        <span className="text-[11px] font-[800] uppercase tracking-[0.1em] text-[#111]">About you</span>
         
-        <div className="flex bg-white border-2 border-[#111] rounded-[12px] overflow-hidden p-0.5 shadow-sm">
-          <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${sex === "F" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setSex("F")}>Female</button>
-          <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${sex === "M" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setSex("M")}>Male</button>
+        <div className="flex bg-white border-[2.5px] border-[#111] rounded-[14px] p-[3px] gap-[3px]">
+          <button className={`flex-1 py-[8px] px-[6px] text-[13px] font-[800] rounded-[10px] transition-colors ${sex === "F" ? "bg-[#111] text-white" : "bg-transparent text-[#4A4A55]"}`} onClick={() => setSex("F")}>Female</button>
+          <button className={`flex-1 py-[8px] px-[6px] text-[13px] font-[800] rounded-[10px] transition-colors ${sex === "M" ? "bg-[#111] text-white" : "bg-transparent text-[#4A4A55]"}`} onClick={() => setSex("M")}>Male</button>
         </div>
         
-        <div className="flex bg-white border-2 border-[#111] rounded-[12px] overflow-hidden p-0.5 shadow-sm">
-          <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${diet === "v" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setDiet("v")}>Veg</button>
-          <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${diet === "e" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setDiet("e")}>Egg ok</button>
-          <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${diet === "n" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setDiet("n")}>Non-veg</button>
+        <div className="flex bg-white border-[2.5px] border-[#111] rounded-[14px] p-[3px] gap-[3px]">
+          <button className={`flex-1 py-[8px] px-[6px] text-[13px] font-[800] rounded-[10px] transition-colors ${diet === "v" ? "bg-[#111] text-white" : "bg-transparent text-[#4A4A55]"}`} onClick={() => setDiet("v")}>Veg</button>
+          <button className={`flex-1 py-[8px] px-[6px] text-[13px] font-[800] rounded-[10px] transition-colors ${diet === "e" ? "bg-[#111] text-white" : "bg-transparent text-[#4A4A55]"}`} onClick={() => setDiet("e")}>Egg ok</button>
+          <button className={`flex-1 py-[8px] px-[6px] text-[13px] font-[800] rounded-[10px] transition-colors ${diet === "n" ? "bg-[#111] text-white" : "bg-transparent text-[#4A4A55]"}`} onClick={() => setDiet("n")}>Non-veg</button>
         </div>
         
-        <div className="flex items-center justify-between border-t-2 border-dashed border-[#E5E5E5] pt-4">
+        <div className="flex items-center justify-between border-t-[1.5px] border-dashed border-[rgba(17,17,17,0.2)] pt-[9px]">
           <div>
-            <div className="font-extrabold text-[15px] text-[#111]">Body weight</div>
-            <div className="text-[12px] text-[#888] font-mono">helps set protein limits</div>
+            <div className="font-[800] text-[14px] flex items-center gap-[7px] text-[#111]">Body weight</div>
+            <div className="font-[var(--font-mono)] text-[10.5px] text-[#77778A]">helps set your protein goal</div>
           </div>
           <div className="flex items-center gap-2">
-            <input type="number" className="w-16 h-10 border-2 border-[#111] rounded-[10px] text-center font-bold text-[15px]" value={weight} onChange={(e) => setWeight(e.target.value)} />
-            <span className="text-[14px] font-bold text-[#666]">kg</span>
+            <input type="number" className="w-[84px] h-[36px] border-[2px] border-[#111] rounded-[10px] px-[8px] bg-white font-[var(--font-mono)] text-[13px] text-right" value={weight} onChange={(e) => setWeight(e.target.value)} />
+            <span className="w-[30px] font-[var(--font-mono)] text-[10px] text-[#77778A]">kg</span>
           </div>
         </div>
         
-        {/* Missing Everyday / Active Toggle Added Here */}
-        <div className="flex bg-white border-2 border-[#111] rounded-[12px] overflow-hidden p-0.5 shadow-sm mt-1">
-          <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${activity === "everyday" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setActivity("everyday")}>Everyday</button>
-          <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${activity === "active" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setActivity("active")}>Active / gym</button>
+        <div className="flex bg-white border-[2.5px] border-[#111] rounded-[14px] p-[3px] gap-[3px]">
+          <button className={`flex-1 py-[8px] px-[6px] text-[13px] font-[800] rounded-[10px] transition-colors ${activity === "everyday" ? "bg-[#111] text-white" : "bg-transparent text-[#4A4A55]"}`} onClick={() => setActivity("everyday")}>Everyday</button>
+          <button className={`flex-1 py-[8px] px-[6px] text-[13px] font-[800] rounded-[10px] transition-colors ${activity === "active" ? "bg-[#111] text-white" : "bg-transparent text-[#4A4A55]"}`} onClick={() => setActivity("active")}>Active / gym</button>
         </div>
         
-        <p className="text-[12.5px] text-[#666] font-medium leading-snug m-0">
+        <p className="text-[12px] text-[#4A4A55] m-0">
           Every home's katori and glass is a different size, so Kami shows protein as levels, not grams.
         </p>
       </div>
 
       {/* 3. Report Values Section */}
-      <div className="bg-white border-2 border-[#111] rounded-[20px] p-4 shadow-[4px_4px_0_#111]">
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#666]">Report values</span>
-          <button className="bg-[#FFD23F] border-2 border-[#111] px-3 py-1 rounded-lg text-[12px] font-extrabold shadow-[2px_2px_0_#111] active:translate-y-[2px] active:shadow-none transition-all" onClick={() => setVals({ ...SAMPLE })}>Load example</button>
+      <div className="bg-white border-[2.5px] border-[#111] rounded-[20px] p-[15px] shadow-[4px_4px_0_#111]">
+        <div className="flex justify-between items-center mb-[2px]">
+          <span className="text-[11px] font-[800] uppercase tracking-[0.1em] text-[#111]">Report values</span>
+          <button className="bg-[#FFD23F] border-[2px] border-[#111] px-[10px] py-[4px] rounded-full text-[11.5px] font-[800] text-[#111]" onClick={() => setVals({ ...SAMPLE })}>Load example</button>
         </div>
-        <div className="grid gap-3">
+        <div>
           {MARKERS.map((m) => {
             const s = getStatus(m);
             const dotColor = s ? `var(--${s.k})` : "#E5E5E5";
             return (
-              <div className="flex items-center justify-between py-2 border-b border-dashed border-[#E5E5E5] last:border-0" key={m.id}>
+              <div className="grid grid-cols-[1fr_84px_50px] gap-2 items-center py-[9px] border-b-[1.5px] border-dashed border-[rgba(17,17,17,0.2)] last:border-b-0" key={m.id}>
                 <div>
-                  <div className="font-extrabold text-[14.5px] text-[#111] flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full border-2 border-[#111]" style={{ background: dotColor }}></span>
+                  <div className="font-[800] text-[14px] flex items-center gap-[7px]">
+                    <span className="w-[10px] h-[10px] rounded-full flex-none border-[2px] border-[#111]" style={{ background: dotColor }}></span>
                     {m.name}
                   </div>
-                  <div className="text-[11px] text-[#888] font-mono mt-0.5">normal {pick(m.low, sex)}–{pick(m.hi, sex)}</div>
+                  <div className="font-[var(--font-mono)] text-[10.5px] text-[#77778A]">normal {pick(m.low, sex)}–{pick(m.hi, sex)}</div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <input type="number" className="w-[72px] h-9 border-2 border-[#111] rounded-[8px] text-center font-bold text-[14px]" value={vals[m.id] || ""} onChange={(e) => setVals({ ...vals, [m.id]: parseFloat(e.target.value) })} />
-                  <span className="text-[12px] font-bold text-[#666] w-8">{m.unit}</span>
-                </div>
+                <input type="number" className="w-full border-[2px] border-[#111] rounded-[10px] py-[6px] px-[8px] bg-white font-[var(--font-mono)] text-[13px] text-right" value={vals[m.id] || ""} onChange={(e) => setVals({ ...vals, [m.id]: parseFloat(e.target.value) })} />
+                <span className="font-[var(--font-mono)] text-[10px] text-[#77778A]">{m.unit}</span>
               </div>
             );
           })}
@@ -169,15 +174,15 @@ export default function ClinixBridgeApp() {
       </div>
 
       {/* 4. Action Buttons */}
-      <div className="grid gap-3 pt-2">
+      <div className="grid gap-[10px] pt-1">
         <button 
-          className="w-full bg-[#FF5B37] text-white font-extrabold text-[16.5px] py-4 rounded-[14px] border-2 border-[#111] shadow-[4px_4px_0_#111] active:translate-y-[3px] active:shadow-none transition-all flex items-center justify-center gap-2" 
+          className="w-full bg-[#FF5A36] text-white font-[800] text-[15.5px] py-[14px] px-[18px] rounded-[16px] border-[2.5px] border-[#111] shadow-[4px_4px_0_#111] active:translate-y-[3px] active:translate-x-[3px] active:shadow-[1px_1px_0_#111] transition-all flex items-center justify-center gap-[8px]" 
           onClick={() => setActiveTab("scan")}
         >
-          Scan my levels &rarr;
+          Scan my levels <span aria-hidden="true">→</span>
         </button>
         <button 
-          className="w-full bg-white text-[#111] font-extrabold text-[15px] py-4 rounded-[14px] border-2 border-[#111] shadow-[4px_4px_0_#111] active:translate-y-[3px] active:shadow-none transition-all"
+          className="w-full bg-white text-[#111] font-[800] text-[15.5px] py-[11px] px-[18px] rounded-[16px] border-[2.5px] border-[#111] shadow-[4px_4px_0_#111] active:translate-y-[3px] active:translate-x-[3px] active:shadow-[1px_1px_0_#111] transition-all"
           onClick={() => alert("Report securely saved to history!")}
         >
           Save as a new report in my history
@@ -313,39 +318,36 @@ export default function ClinixBridgeApp() {
         
         {/* Brand Header */}
         {activeTab === "report" && (
-          <div className="grid gap-4 pt-4 pb-2 relative z-10">
-            <div className="flex items-center gap-2 font-[var(--font-display)] text-[24px] font-bold tracking-tight mb-2">
-              <span className="w-8 h-8 rounded-[10px] bg-[#FF5B37] flex items-center justify-center text-white text-[16px] font-black">k</span>
-              kami
+          <div className="grid gap-4 pt-4 pb-2 relative z-10 w-full max-w-[560px] mx-auto px-4">
+            <div className="flex items-center gap-2.5 font-[var(--font-display)] text-[24px] tracking-tight mb-2">
+              <span className="w-[38px] h-[38px] rounded-[12px] bg-[#FF5B37] border-[2.5px] border-[#111] shadow-[3px_3px_0_#111] flex items-center justify-center text-white text-[18px] -rotate-[8deg]">cb</span>
+              ClinixBridge
             </div>
             
-            <h1 className="font-black text-[clamp(36px,9vw,48px)] leading-[1.05] tracking-tight m-0 text-[#111]">
-              <div className="block">Your blood report,</div>
-              <div className="block mt-1">
-                turned into <span className="inline-block bg-[#FFD23F] border-[3px] border-[#111] px-3 py-0 rounded-[8px] shadow-[4px_4px_0_#111] leading-[1.1] ml-1">tomorrow's</span>
-              </div>
-              <div className="block mt-2">
-                <span className="inline-block bg-[#FFD23F] border-[3px] border-[#111] px-3 py-0 rounded-[8px] shadow-[4px_4px_0_#111] leading-[1.1] mr-2">breakfast.</span>
-                Not <span className="relative text-[#888] inline-block after:content-[''] after:absolute after:-left-[8%] after:-right-[8%] after:top-[50%] after:-translate-y-1/2 after:h-[5px] after:bg-[#FF5B37] after:rounded-full after:-rotate-[4deg]">pills.</span>
-              </div>
+            <h1 className="font-[var(--font-display)] font-normal text-[clamp(36px,9vw,70px)] leading-[1] tracking-[-0.03em] m-0 text-[#111] text-balance">
+              Your blood report, turned into <span className="bg-[#FFD23F] px-[0.12em] border-[2.5px] border-[#111] rounded-[0.18em] shadow-[4px_4px_0_#111] box-decoration-clone leading-[1.25]">tomorrow's breakfast.</span> Not <span className="relative text-[#77778A] after:content-[''] after:absolute after:-left-[4%] after:-right-[4%] after:top-[50%] after:h-[0.13em] after:bg-[#FF5B37] after:-rotate-[7deg] after:rounded-[4px]">pills</span>.
             </h1>
             
-            <p className="text-[14px] text-[#555] font-semibold m-0 mt-2 leading-relaxed">
-              Upload your report. Kami plans every meal from food at home or the kirana store.
+            <p className="text-[18px] text-[#4A4A55] font-[var(--font-body)] m-0 mt-2 max-w-[50ch]">
+              Upload a nutrition blood test. ClinixBridge spots what's running low, like <b className="text-[#111] font-extrabold">iron, B12 or Vitamin D</b>, and plans every meal from food you already have at home or can grab at the kirana store.
             </p>
           </div>
         )}
 
         {/* Global User Header */}
-        <div className="flex justify-between items-end py-6 relative z-10">
+        <div className="flex justify-between items-center py-[18px] px-0 pb-[10px] relative z-10">
           <div>
             <div 
-              className="text-[11px] text-[#666] font-bold cursor-pointer hover:text-[#111] flex items-center gap-1 uppercase tracking-wide"
+              className="text-[12.5px] text-[#4A4A55] font-[700] cursor-pointer hover:text-[#111]"
               onClick={() => setShowUsers(!showUsers)}
             >
               Hey {currentUser} · {diet === "v" ? "Veg" : diet === "e" ? "Eggetarian" : "Non-veg"}
             </div>
-            <h2 className="font-black text-[28px] tracking-tight capitalize m-0 mt-1">Your {activeTab}</h2>
+            <h2 className="font-[var(--font-display)] font-normal text-[25px] tracking-[-0.02em] capitalize m-0 mt-0.5">{activeTab}</h2>
+          </div>
+          <div className="w-[40px] h-[40px] rounded-[13px] bg-[#B69CFF] border-[2.5px] border-[#111] shadow-[2px_2px_0_#111] flex items-center justify-center font-[var(--font-display)] text-[15px]">
+            {currentUser ? currentUser[0].toUpperCase() : "P"}
+          </div>
             
             {showUsers && (
               <div className="absolute top-12 left-0 bg-white border-2 border-[#111] shadow-[4px_4px_0_#111] rounded-xl overflow-hidden z-50">
@@ -376,7 +378,7 @@ export default function ClinixBridgeApp() {
         </main>
 
         {/* Neo-brutalist Bottom Navigation */}
-        <nav className="fixed left-4 right-4 md:left-1/2 md:-translate-x-1/2 bottom-[calc(12px+env(safe-area-inset-bottom,0px))] md:w-full md:max-w-[500px] z-20 flex justify-between px-1.5 py-1.5 rounded-[22px] bg-white border-2 border-[#111] shadow-[5px_5px_0_#111]">
+        <nav className="fixed left-[max(12px,calc(50%-268px))] right-[max(12px,calc(50%-268px))] bottom-[calc(12px+env(safe-area-inset-bottom,0px))] z-20 grid grid-cols-5 gap-[2px] p-[6px] rounded-[22px] bg-white border-[2.5px] border-[#111] shadow-[4px_4px_0_#111]">
           {[
             { id: "report", icon: ClipboardList, label: "Report" },
             { id: "scan", icon: Activity, label: "Levels" },
@@ -389,13 +391,13 @@ export default function ClinixBridgeApp() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 rounded-[16px] text-[10.5px] font-extrabold transition-all duration-200 ${
+                className={`flex flex-col items-center justify-center gap-[2px] py-2 rounded-[15px] text-[10.5px] font-[800] transition-all bg-transparent border-0 ${
                   isActive
-                    ? "bg-[#FFD23F] text-[#111] border-2 border-[#111] shadow-[inset_0_-2px_0_rgba(0,0,0,0.1)]"
-                    : "text-[#888] border-2 border-transparent hover:text-[#111]"
+                    ? "bg-[#FFD23F] text-[#111] outline outline-2 outline-[#111]"
+                    : "text-[#77778A]"
                 }`}
               >
-                <tab.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                <tab.icon size={21} strokeWidth={2} />
                 {tab.label}
               </button>
             );
