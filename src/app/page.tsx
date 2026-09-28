@@ -248,14 +248,14 @@ export default function ClinixBridgeApp() {
         <div className="hero-score">
           <div className="ring" style={{ "--p": pct } as React.CSSProperties}><span>{okCount}/{rows.length}</span></div>
           <div>
-            <h3>{rows.length - okCount ? `${rows.length - okCount} biomarkers to balance` : "Homeostasis Achieved"}</h3>
-            <p>{rows.length - okCount ? "Generating bioavailable moderation protocols." : "We'll keep you balanced."}</p>
+            <h3>{rows.length - okCount ? `${rows.length - okCount} things to fix with food` : "All clear. Nice."}</h3>
+            <p>{rows.length - okCount ? "Your plan targets these first, starting today." : "We'll keep you balanced."}</p>
           </div>
         </div>
         
         {crits.length > 0 && (
           <div className="docflag">
-            <b>Mandatory 7-Day Triage Alert:</b> Please consult a physician about {crits.map(r => r.m.name).join(", ")}. These markers fall outside safe homeostatic moderation limits.
+            <b>Please see a doctor about {crits.map(r => r.m.name).join(", ")}.</b> These are very low, and food alone may be too slow. ClinixBridge's meals can support whatever they prescribe.
           </div>
         )}
 
@@ -268,10 +268,13 @@ export default function ClinixBridgeApp() {
               <div className="val">{v}<small>{m.unit}</small></div>
               <div className="bar"><i style={{ left: `${pos}%`, background: `var(--${s!.k})` }}></i></div>
               <div className="meta"><span>low</span><span>normal {lo}–{hi}</span><span>high</span></div>
-              {s!.k !== "ok" && (<div className="eat">{m.why}<br/><b>Bioavailable Culinary Source:</b> {FOODS[m.nut]}</div>)}
+              {s!.k !== "ok" && (<div className="eat">{m.why}<br/><b>Eat more:</b> {FOODS[m.nut]}</div>)}
             </div>
           );
         })}
+        <button className="w-full bg-[#FF5A36] text-white font-[800] text-[15.5px] py-[14px] px-[18px] rounded-[16px] border-[2.5px] border-[#111] shadow-[4px_4px_0_#111] active:translate-y-[3px] active:translate-x-[3px] active:shadow-[1px_1px_0_#111] transition-all flex items-center justify-center gap-[8px] mt-2" onClick={() => setActiveTab("today")}>
+          See today's meals <span aria-hidden="true">→</span>
+        </button>
       </div>
     );
   };
@@ -361,7 +364,7 @@ export default function ClinixBridgeApp() {
         
         {/* Brand Header */}
         {activeTab === "report" && (
-          <div className="grid gap-[10px] pt-[18px] pb-[4px] px-[2px] relative z-10 w-full max-w-[560px] mx-auto">
+          <div className="grid gap-[10px] pt-[18px] pb-[4px] relative z-10 w-full max-w-[560px] mx-auto">
             <div className="flex items-center gap-[10px] font-display text-[22px] tracking-tight">
               <span className="w-[38px] h-[38px] rounded-[12px] bg-[#FF5A36] border-[2.5px] border-[#111] shadow-[3px_3px_0_#111] flex items-center justify-center text-white text-[18px] -rotate-[8deg]">cb</span>
               ClinixBridge
@@ -386,7 +389,7 @@ export default function ClinixBridgeApp() {
         )}
 
         {/* Global User Header */}
-        <div className="flex justify-between items-center py-[18px] px-0 pb-[10px] relative z-10">
+        <div className="flex justify-between items-center pt-[16px] pb-[10px] relative z-10 w-full max-w-[560px] mx-auto">
           <div>
             <div 
               className="text-[12.5px] text-[#4A4A55] font-[700] cursor-pointer hover:text-[#111]"
@@ -394,7 +397,7 @@ export default function ClinixBridgeApp() {
             >
               Hey {currentUser} · {diet === "v" ? "Veg" : diet === "e" ? "Eggetarian" : "Non-veg"}
             </div>
-            <h2 className="font-display font-normal text-[25px] tracking-[-0.02em] capitalize m-0 mt-0.5">{activeTab}</h2>
+            <h2 className="font-display font-normal text-[25px] tracking-[-0.02em] m-0">{activeTab === "report" ? "Your report" : activeTab === "scan" ? "My levels" : activeTab === "today" ? "Today's plate" : activeTab === "progress" ? "Progress" : ""}</h2>
             
             {showUsers && (
               <div className="absolute top-12 left-0 bg-white border-2 border-[#111] shadow-[4px_4px_0_#111] rounded-xl overflow-hidden z-50 min-w-[200px]">
