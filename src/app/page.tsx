@@ -92,7 +92,7 @@ export default function ClinixBridgeApp() {
             <path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/>
           </svg>
         </div>
-        <b className="block font-[var(--font-display)] font-normal text-[17px] mt-[6px]">Drop your blood report</b>
+        <b className="block font-display font-normal text-[17px] mt-[6px]">Drop your blood report</b>
         <span className="text-[13px] font-[600]">PDF or photo · CBC, Vit D, B12, iron profile</span>
       </label>
 
@@ -102,7 +102,7 @@ export default function ClinixBridgeApp() {
           Or paste the report text
         </summary>
         <textarea 
-          className="w-full min-h-[90px] rounded-[12px] border-[2px] border-[#111] bg-[#FAFAFD] p-[10px] font-[var(--font-mono)] text-[12px] mt-2 mb-2 focus:outline-none focus:ring-2 focus:ring-[#5AB0FF] focus:border-transparent" 
+          className="w-full min-h-[90px] rounded-[12px] border-[2px] border-[#111] bg-[#FAFAFD] p-[10px] font-mono text-[12px] mt-2 mb-2 focus:outline-none focus:ring-2 focus:ring-[#5AB0FF] focus:border-transparent" 
           placeholder="Haemoglobin 11.2 g/dL&#10;Vitamin D (25-OH) 16 ng/mL&#10;Vitamin B12 182 pg/mL"
         ></textarea>
         <button className="w-full border-[2.5px] border-[#111] rounded-[16px] p-[11px] font-[800] text-[15.5px] bg-white text-[#111] shadow-[4px_4px_0_#111] active:translate-y-[3px] active:translate-x-[3px] active:shadow-[1px_1px_0_#111] transition-all">
@@ -128,11 +128,11 @@ export default function ClinixBridgeApp() {
         <div className="flex items-center justify-between border-t-[1.5px] border-dashed border-[rgba(17,17,17,0.2)] pt-[9px]">
           <div>
             <div className="font-[800] text-[14px] flex items-center gap-[7px] text-[#111]">Body weight</div>
-            <div className="font-[var(--font-mono)] text-[10.5px] text-[#77778A]">helps set your protein goal</div>
+            <div className="font-mono text-[10.5px] text-[#77778A]">helps set your protein goal</div>
           </div>
           <div className="flex items-center gap-2">
-            <input type="number" className="w-[84px] h-[36px] border-[2px] border-[#111] rounded-[10px] px-[8px] bg-white font-[var(--font-mono)] text-[13px] text-right" value={weight} onChange={(e) => setWeight(e.target.value)} />
-            <span className="w-[30px] font-[var(--font-mono)] text-[10px] text-[#77778A]">kg</span>
+            <input type="number" className="w-[84px] h-[36px] border-[2px] border-[#111] rounded-[10px] px-[8px] bg-white font-mono text-[13px] text-right" value={weight} onChange={(e) => setWeight(e.target.value)} />
+            <span className="w-[30px] font-mono text-[10px] text-[#77778A]">kg</span>
           </div>
         </div>
         
@@ -163,10 +163,10 @@ export default function ClinixBridgeApp() {
                     <span className="w-[10px] h-[10px] rounded-full flex-none border-[2px] border-[#111]" style={{ background: dotColor }}></span>
                     {m.name}
                   </div>
-                  <div className="font-[var(--font-mono)] text-[10.5px] text-[#77778A]">normal {pick(m.low, sex)}–{pick(m.hi, sex)}</div>
+                  <div className="font-mono text-[10.5px] text-[#77778A]">normal {pick(m.low, sex)}–{pick(m.hi, sex)}</div>
                 </div>
-                <input type="number" className="w-full border-[2px] border-[#111] rounded-[10px] py-[6px] px-[8px] bg-white font-[var(--font-mono)] text-[13px] text-right" value={vals[m.id] || ""} onChange={(e) => setVals({ ...vals, [m.id]: parseFloat(e.target.value) })} />
-                <span className="font-[var(--font-mono)] text-[10px] text-[#77778A]">{m.unit}</span>
+                <input type="number" className="w-full border-[2px] border-[#111] rounded-[10px] py-[6px] px-[8px] bg-white font-mono text-[13px] text-right" value={vals[m.id] || ""} onChange={(e) => setVals({ ...vals, [m.id]: parseFloat(e.target.value) })} />
+                <span className="font-mono text-[10px] text-[#77778A]">{m.unit}</span>
               </div>
             );
           })}
@@ -241,14 +241,14 @@ export default function ClinixBridgeApp() {
     return (
       <div className="grid gap-[14px] pb-6 content-start">
         <div className="grid grid-cols-[36px_1fr] gap-2.5 items-end">
-          <div className="w-9 h-9 rounded-xl bg-[var(--tomato)] text-white border-[var(--bw)] border-[var(--ink)] flex items-center justify-center font-[var(--font-display)] text-[15px] -rotate-6">cb</div>
+          <div className="w-9 h-9 rounded-xl bg-[var(--tomato)] text-white border-[var(--bw)] border-[var(--ink)] flex items-center justify-center font-display text-[15px] -rotate-6">cb</div>
           <div className="bg-[var(--sun)] rounded-[20px_20px_20px_6px] p-3 text-sm font-medium border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)]">
             Morning Neel! Day 1 of your homeostatic protocol. All recipes below prioritize zero-waste cooking to maximize bioavailability.
           </div>
         </div>
         {todayMeals.map((m, i) => (
           <div key={i} className="grid grid-cols-[auto_1fr] gap-3 items-start bg-[var(--card)] rounded-[20px] p-3 border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)]">
-            <span className={`w-11 h-11 rounded-xl flex items-center justify-center font-[var(--font-display)] text-[17px] border-[var(--bw)] border-[var(--ink)] ${m.s === 'b' ? 'bg-[var(--sun)] text-[var(--ink)]' : m.s === 'l' ? 'bg-[var(--tomato)] text-white' : m.s === 's' ? 'bg-[var(--sky)] text-[var(--ink)]' : 'bg-[var(--lilac)] text-[var(--ink)]'}`}>
+            <span className={`w-11 h-11 rounded-xl flex items-center justify-center font-display text-[17px] border-[var(--bw)] border-[var(--ink)] ${m.s === 'b' ? 'bg-[var(--sun)] text-[var(--ink)]' : m.s === 'l' ? 'bg-[var(--tomato)] text-white' : m.s === 's' ? 'bg-[var(--sky)] text-[var(--ink)]' : 'bg-[var(--lilac)] text-[var(--ink)]'}`}>
               {TILE[m.s]}
             </span>
             <div>
@@ -269,13 +269,13 @@ export default function ClinixBridgeApp() {
       <div className="grid gap-[14px] pb-6 content-start">
         <div className="bg-[var(--mint)] border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)] rounded-[22px] p-4 grid gap-1">
           <span className="label text-[var(--ink)]">RPM Dashboard Analytics</span>
-          <div className="font-[var(--font-display)] text-[27px] leading-[1.05]">
+          <div className="font-display text-[27px] leading-[1.05]">
             <em className="not-italic bg-white px-1.5 rounded-lg border-2 border-[var(--ink)]">3 of 9</em> markers stabilizing
           </div>
         </div>
         <div className="glass chart">
           <div className="flex justify-between items-baseline mb-1.5">
-            <b className="font-[var(--font-display)] font-normal text-[16px]">{activeMarker.name}</b>
+            <b className="font-display font-normal text-[16px]">{activeMarker.name}</b>
             <span className="label">{activeMarker.unit}</span>
           </div>
           <div className="flex gap-1.5 overflow-x-auto pb-1.5" style={{ scrollbarWidth: 'none' }}>
@@ -301,7 +301,7 @@ export default function ClinixBridgeApp() {
     <div className="grid gap-[14px] pb-6 content-start">
       <div className="bg-[var(--card)] border-[var(--bw)] border-[var(--ink)] rounded-[22px] p-4 grid gap-2.5 shadow-[var(--sh2)] bg-[var(--sun)]">
         <span className="pill bg-[var(--tomato)] text-white w-max">Hackathon Core</span>
-        <span className="font-[var(--font-display)] text-[17px]">Clinical Guardrails</span>
+        <span className="font-display text-[17px]">Clinical Guardrails</span>
         <ul className="m-0 p-0 list-none text-[13.5px] grid gap-1.5 font-medium">
           <li className="flex gap-2">✓ 7-Day Somatic Pain limits</li>
           <li className="flex gap-2">✓ Homeostatic Moderation (No bans)</li>
@@ -313,18 +313,18 @@ export default function ClinixBridgeApp() {
 
   // --- RENDER FULL SCREEN APP ---
   return (
-    <div className="min-h-screen w-full font-[var(--font-body)] text-[#111]" style={{ background: "#FAFAFD" }}>
+    <div className="min-h-screen w-full font-body text-[#111]" style={{ background: "#FAFAFD" }}>
       <div className="max-w-[560px] mx-auto w-full px-4 pb-[calc(118px+env(safe-area-inset-bottom,0px))] relative min-h-screen min-h-[100dvh] flex flex-col">
         
         {/* Brand Header */}
         {activeTab === "report" && (
           <div className="grid gap-[10px] pt-[18px] pb-[4px] px-[2px] relative z-10 w-full max-w-[560px] mx-auto">
-            <div className="flex items-center gap-[10px] font-[var(--font-display)] text-[22px] tracking-tight">
+            <div className="flex items-center gap-[10px] font-display text-[22px] tracking-tight">
               <span className="w-[38px] h-[38px] rounded-[12px] bg-[#FF5A36] border-[2.5px] border-[#111] shadow-[3px_3px_0_#111] flex items-center justify-center text-white text-[18px] -rotate-[8deg]">cb</span>
               ClinixBridge
             </div>
             
-            <h1 className="font-[var(--font-display)] font-normal text-[clamp(30px,9vw,42px)] leading-[1.02] tracking-[-0.03em] m-0 text-[#111] text-balance">
+            <h1 className="font-display font-normal text-[clamp(30px,9vw,42px)] leading-[1.02] tracking-[-0.03em] m-0 text-[#111] text-balance">
               Your blood report, turned into{" "}
               <span className="bg-[#FFD23F] px-[0.12em] border-[2.5px] border-[#111] rounded-[0.18em] shadow-[4px_4px_0_#111] box-decoration-clone leading-[1.25]">
                 tomorrow&apos;s breakfast.
@@ -336,7 +336,7 @@ export default function ClinixBridgeApp() {
               </span>.
             </h1>
             
-            <p className="text-[14px] text-[#4A4A55] font-[var(--font-body)] m-0">
+            <p className="text-[14px] text-[#4A4A55] font-body m-0">
               Upload your report. ClinixBridge plans every meal from food at home or the kirana store.
             </p>
           </div>
@@ -351,7 +351,7 @@ export default function ClinixBridgeApp() {
             >
               Hey {currentUser} · {diet === "v" ? "Veg" : diet === "e" ? "Eggetarian" : "Non-veg"}
             </div>
-            <h2 className="font-[var(--font-display)] font-normal text-[25px] tracking-[-0.02em] capitalize m-0 mt-0.5">{activeTab}</h2>
+            <h2 className="font-display font-normal text-[25px] tracking-[-0.02em] capitalize m-0 mt-0.5">{activeTab}</h2>
             
             {showUsers && (
               <div className="absolute top-12 left-0 bg-white border-2 border-[#111] shadow-[4px_4px_0_#111] rounded-xl overflow-hidden z-50">
@@ -367,7 +367,7 @@ export default function ClinixBridgeApp() {
               </div>
             )}
           </div>
-          <div className="w-[40px] h-[40px] rounded-[13px] bg-[#B69CFF] border-[2.5px] border-[#111] shadow-[2px_2px_0_#111] flex items-center justify-center font-[var(--font-display)] text-[15px]">
+          <div className="w-[40px] h-[40px] rounded-[13px] bg-[#B69CFF] border-[2.5px] border-[#111] shadow-[2px_2px_0_#111] flex items-center justify-center font-display text-[15px]">
             {currentUser ? currentUser[0].toUpperCase() : "P"}
           </div>
         </div>

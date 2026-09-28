@@ -8,9 +8,9 @@
     --tomato: #FF5A36; --sun: #FFD23F; --sky: #5AB0FF; --lilac: #B69CFF; --mint: #33D69F; --pink: #FF8FC8;
     --low: #E8323F; --mid: #E08A00; --ok: #0E9F6E;
     --bw: 2.5px; --sh: 4px 4px 0 var(--ink); --sh2: 6px 6px 0 var(--ink);
-    --display: "Archivo Black", "Arial Black", Impact, sans-serif;
-    --body: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
-    --mono: "Space Mono", ui-monospace, Menlo, Consolas, monospace;
+    --display: var(--font-display, "Archivo Black"), "Arial Black", Impact, sans-serif;
+    --body: var(--font-body, "Outfit"), system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: var(--font-mono, "Space Mono"), ui-monospace, Menlo, Consolas, monospace;
   }
   
   html, body { background: #FAFAFD; }
@@ -114,4 +114,9 @@
   .r .meta { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10.5px; color: var(--dim); }
   .docflag { border: var(--bw) solid var(--ink); box-shadow: var(--sh); border-radius: 16px; padding: 12px 14px; font-size: 12.5px; background: #FFE9E6; }
   .eat { font-size: 13px; color: var(--muted); line-height: 1.45; }
+}
+@layer utilities {
+  .font-display { font-family: var(--display) !important; }
+  .font-body { font-family: var(--body) !important; }
+  .font-mono { font-family: var(--mono) !important; }
 }
