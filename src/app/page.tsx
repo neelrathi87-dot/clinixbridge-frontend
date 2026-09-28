@@ -56,6 +56,7 @@ export default function ClinixBridgeApp() {
   const [sex, setSex] = useState("M");
   const [diet, setDiet] = useState("v");
   const [weight, setWeight] = useState("58");
+  const [activity, setActivity] = useState("everyday");
   const [vals, setVals] = useState<any>({ ...SAMPLE });
   const [pm, setPm] = useState("vitd"); 
 
@@ -76,37 +77,46 @@ export default function ClinixBridgeApp() {
     <div className="flex flex-col gap-5 pb-8">
       
       {/* 1. Functional Blue Dropzone */}
-      <label className="cursor-pointer block w-full bg-[#5EB0FF] border-2 border-dashed border-[#111] rounded-[24px] py-8 px-4 text-center relative transition-transform active:scale-[0.98]">
+      <label className="cursor-pointer block w-full bg-[#5EB0FF] border-[2.5px] border-dashed border-[#111] rounded-[24px] py-10 px-4 text-center relative transition-transform active:scale-[0.98]">
         <input 
           type="file" 
           accept=".pdf,image/png,image/jpeg" 
           className="hidden" 
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) alert(`Demo Mode: "${file.name}" received. ClinixBridge AI is scanning...`);
+            if (file) alert(`Demo Mode: "${file.name}" received. Kami AI is scanning...`);
           }} 
         />
-        <div className="mx-auto w-12 h-12 bg-white border-2 border-[#111] rounded-[14px] shadow-[3px_3px_0_#111] flex items-center justify-center mb-3 -rotate-6">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+        <div className="mx-auto w-14 h-14 bg-white border-2 border-[#111] rounded-[16px] shadow-[4px_4px_0_#111] flex items-center justify-center mb-4">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="24" height="24">
             <path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/>
           </svg>
         </div>
-        <b className="block text-[17px] font-extrabold mb-1 text-[#111]">Drop your lab report</b>
-        <span className="text-[13px] font-semibold text-[#111] opacity-85">PDF or photo · CBC, Vit D, B12, iron profile</span>
+        <b className="block text-[19px] font-black mb-1.5 text-[#111]">Drop your blood report</b>
+        <span className="text-[12px] font-bold text-[#111] opacity-90">PDF or photo · CBC, Vit D, B12, iron profile</span>
       </label>
+
+      {/* Paste Report Accordion */}
+      <button className="w-full flex items-center justify-between bg-white border-2 border-[#111] rounded-[16px] px-5 py-4 shadow-[4px_4px_0_#111] active:translate-y-[2px] active:shadow-[2px_2px_0_#111] transition-all">
+        <span className="text-[14px] font-bold text-[#111]">Or paste the report text</span>
+        <span className="text-[20px] font-bold text-[#111] leading-none">+</span>
+      </button>
 
       {/* 2. About You Section */}
       <div className="bg-white border-2 border-[#111] rounded-[20px] p-4 shadow-[4px_4px_0_#111] grid gap-4">
         <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#666]">About you</span>
+        
         <div className="flex bg-white border-2 border-[#111] rounded-[12px] overflow-hidden p-0.5 shadow-sm">
           <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${sex === "F" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setSex("F")}>Female</button>
           <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${sex === "M" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setSex("M")}>Male</button>
         </div>
+        
         <div className="flex bg-white border-2 border-[#111] rounded-[12px] overflow-hidden p-0.5 shadow-sm">
           <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${diet === "v" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setDiet("v")}>Veg</button>
           <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${diet === "e" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setDiet("e")}>Egg ok</button>
           <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${diet === "n" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setDiet("n")}>Non-veg</button>
         </div>
+        
         <div className="flex items-center justify-between border-t-2 border-dashed border-[#E5E5E5] pt-4">
           <div>
             <div className="font-extrabold text-[15px] text-[#111]">Body weight</div>
@@ -117,6 +127,16 @@ export default function ClinixBridgeApp() {
             <span className="text-[14px] font-bold text-[#666]">kg</span>
           </div>
         </div>
+        
+        {/* Missing Everyday / Active Toggle Added Here */}
+        <div className="flex bg-white border-2 border-[#111] rounded-[12px] overflow-hidden p-0.5 shadow-sm mt-1">
+          <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${activity === "everyday" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setActivity("everyday")}>Everyday</button>
+          <button className={`flex-1 py-2 text-[14px] font-bold rounded-[8px] transition-colors ${activity === "active" ? "bg-[#111] text-white" : "bg-white text-[#111]"}`} onClick={() => setActivity("active")}>Active / gym</button>
+        </div>
+        
+        <p className="text-[12.5px] text-[#666] font-medium leading-snug m-0">
+          Every home's katori and glass is a different size, so Kami shows protein as levels, not grams.
+        </p>
       </div>
 
       {/* 3. Report Values Section */}
@@ -288,36 +308,53 @@ export default function ClinixBridgeApp() {
 
   // --- RENDER FULL SCREEN APP ---
   return (
-    <div className="min-h-screen bg-[#F4F7FF] text-[var(--ink)] font-[var(--font-body)]">
-      <div className="max-w-[560px] mx-auto w-full px-4 pt-4 pb-[120px] relative min-h-screen flex flex-col bg-white border-x-2 border-[#111] shadow-2xl">
+    <div 
+      className="min-h-screen w-full font-[var(--font-body)] text-[#111]"
+      style={{ 
+        backgroundColor: "#F4F7FF", 
+        backgroundImage: "radial-gradient(#CBD5E1 1px, transparent 1px)", 
+        backgroundSize: "24px 24px",
+        backgroundPosition: "0 0"
+      }}
+    >
+      {/* BORDERLESS CENTRAL COLUMN: Removed bg-white, border-x-2, and shadow-2xl */}
+      <div className="max-w-[520px] mx-auto w-full px-4 pt-6 pb-[120px] relative min-h-screen flex flex-col">
         
         {/* Brand Header */}
         {activeTab === "report" && (
-          <div className="grid gap-2.5 pt-2 pb-2 relative z-10">
-            <div className="flex items-center gap-2.5 font-[var(--font-display)] text-[22px] tracking-tight mb-2">
-              <span className="w-[38px] h-[38px] rounded-xl bg-[#FF5B37] border-2 border-[#111] shadow-[3px_3px_0_#111] flex items-center justify-center text-white text-lg -rotate-6">cb</span>
-              ClinixBridge
+          <div className="grid gap-4 pt-4 pb-2 relative z-10">
+            <div className="flex items-center gap-2 font-[var(--font-display)] text-[24px] font-bold tracking-tight mb-2">
+              <span className="w-8 h-8 rounded-[10px] bg-[#FF5B37] flex items-center justify-center text-white text-[16px] font-black">k</span>
+              kami
             </div>
-            <h1 className="font-normal text-[clamp(30px,9vw,42px)] leading-[1.02] tracking-tight m-0">
-              Your lab report, turned into <span className="bg-[#FFD23F] px-1.5 border-2 border-[#111] rounded-md shadow-[4px_4px_0_#111] inline-block mt-1">bioavailable nutrition.</span> Not <span className="relative text-[#888] after:content-[''] after:absolute after:-left-[4%] after:-right-[4%] after:top-1/2 after:h-[0.13em] after:bg-[#FF5B37] after:-rotate-[7deg] after:rounded-sm">pills</span>.
+            
+            <h1 className="font-black text-[clamp(36px,9vw,48px)] leading-[1.05] tracking-tight m-0 text-[#111]">
+              <div className="block">Your blood report,</div>
+              <div className="block mt-1">
+                turned into <span className="inline-block bg-[#FFD23F] border-[3px] border-[#111] px-3 py-0 rounded-[8px] shadow-[4px_4px_0_#111] leading-[1.1] ml-1">tomorrow's</span>
+              </div>
+              <div className="block mt-2">
+                <span className="inline-block bg-[#FFD23F] border-[3px] border-[#111] px-3 py-0 rounded-[8px] shadow-[4px_4px_0_#111] leading-[1.1] mr-2">breakfast.</span>
+                Not <span className="relative text-[#888] inline-block after:content-[''] after:absolute after:-left-[8%] after:-right-[8%] after:top-[50%] after:-translate-y-1/2 after:h-[5px] after:bg-[#FF5B37] after:rounded-full after:-rotate-[4deg]">pills.</span>
+              </div>
             </h1>
-            <p className="text-[14px] text-[#666] font-medium m-0 mt-1 leading-relaxed">
-              Upload your report. ClinixBridge calculates homeostatic thresholds and generates local recipes using zero-waste cooking methods.
+            
+            <p className="text-[14px] text-[#555] font-semibold m-0 mt-2 leading-relaxed">
+              Upload your report. Kami plans every meal from food at home or the kirana store.
             </p>
           </div>
         )}
 
         {/* Global User Header */}
-        <div className="flex justify-between items-center py-5 relative z-10">
+        <div className="flex justify-between items-end py-6 relative z-10">
           <div>
             <div 
-              className="text-[12.5px] text-[#666] font-bold cursor-pointer hover:text-[#111] flex items-center gap-1"
+              className="text-[11px] text-[#666] font-bold cursor-pointer hover:text-[#111] flex items-center gap-1 uppercase tracking-wide"
               onClick={() => setShowUsers(!showUsers)}
             >
               Hey {currentUser} · {diet === "v" ? "Veg" : diet === "e" ? "Eggetarian" : "Non-veg"}
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M6 9l6 6 6-6"/></svg>
             </div>
-            <h2 className="font-[var(--font-display)] font-normal text-[26px] tracking-tight capitalize m-0 mt-0.5">{activeTab}</h2>
+            <h2 className="font-black text-[28px] tracking-tight capitalize m-0 mt-1">Your {activeTab}</h2>
             
             {showUsers && (
               <div className="absolute top-12 left-0 bg-white border-2 border-[#111] shadow-[4px_4px_0_#111] rounded-xl overflow-hidden z-50">
@@ -348,7 +385,7 @@ export default function ClinixBridgeApp() {
         </main>
 
         {/* Neo-brutalist Bottom Navigation */}
-        <nav className="fixed left-4 right-4 md:left-1/2 md:-translate-x-1/2 bottom-[calc(12px+env(safe-area-inset-bottom,0px))] md:w-full md:max-w-[536px] z-20 flex justify-between px-1.5 py-1.5 rounded-[22px] bg-white border-2 border-[#111] shadow-[5px_5px_0_#111]">
+        <nav className="fixed left-4 right-4 md:left-1/2 md:-translate-x-1/2 bottom-[calc(12px+env(safe-area-inset-bottom,0px))] md:w-full md:max-w-[500px] z-20 flex justify-between px-1.5 py-1.5 rounded-[22px] bg-white border-2 border-[#111] shadow-[5px_5px_0_#111]">
           {[
             { id: "report", icon: ClipboardList, label: "Report" },
             { id: "scan", icon: Activity, label: "Levels" },
