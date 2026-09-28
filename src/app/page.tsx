@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Activity, ClipboardList, Utensils, TrendingUp, ShieldCheck } from "lucide-react";
+import { Activity, ClipboardList, Utensils, TrendingUp } from "lucide-react";
 
 // --- CLINIXBRIDGE DATA & RULES ---
 const SAMPLE = { hb: 11.2, ferritin: 14, vitd: 16, b12: 182, folate: 6.1, ca: 9.1, mg: 1.6, zinc: 64, alb: 4.1 };
@@ -378,27 +378,24 @@ export default function ClinixBridgeApp() {
           {activeTab === "scan" && renderScan()}
           {activeTab === "today" && renderToday()}
           {activeTab === "progress" && renderProgress()}
-          {activeTab === "plans" && renderPlans()}
         </main>
 
         {/* Neo-brutalist Bottom Navigation */}
-        <nav className="fixed left-[max(12px,calc(50%-268px))] right-[max(12px,calc(50%-268px))] bottom-[calc(12px+env(safe-area-inset-bottom,0px))] z-20 grid grid-cols-5 gap-[2px] p-[6px] rounded-[22px] bg-white border-[2.5px] border-[#111] shadow-[4px_4px_0_#111]">
+        <nav className="fixed left-[max(12px,calc(50%-268px))] right-[max(12px,calc(50%-268px))] bottom-[calc(12px+env(safe-area-inset-bottom,0px))] z-20 grid grid-cols-4 gap-[2px] p-[6px] rounded-[22px] bg-white border-[2.5px] border-[#111] shadow-[4px_4px_0_#111]">
           {[
             { id: "report", icon: ClipboardList, label: "Report" },
             { id: "scan", icon: Activity, label: "Levels" },
             { id: "today", icon: Utensils, label: "Today" },
             { id: "progress", icon: TrendingUp, label: "Progress" },
-            { id: "plans", icon: ShieldCheck, label: "Pro" },
           ].map((tab) => {
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center justify-center gap-[2px] py-2 rounded-[15px] text-[10.5px] font-[800] transition-all bg-transparent border-0 ${
-                  isActive
-                    ? "bg-[#FFD23F] text-[#111] outline outline-2 outline-[#111]"
-                    : "text-[#77778A]"
+                style={isActive ? { background: "#FFD23F", outline: "2px solid #111", color: "#111" } : {}}
+                className={`flex flex-col items-center justify-center gap-[2px] py-2 rounded-[15px] text-[10.5px] font-[800] border-0 ${
+                  isActive ? "" : "bg-transparent text-[#77778A]"
                 }`}
               >
                 <tab.icon size={21} strokeWidth={2} />
