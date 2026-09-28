@@ -74,26 +74,26 @@ export default function ClinixBridgeApp() {
 
   // --- TAB 1: REPORT ---
   const renderReport = () => (
-    <div className="flex flex-col gap-5 pb-8">
+    <div className="grid gap-[14px] pb-6 content-start">
       
       {/* 1. Functional Blue Dropzone */}
-      <label className="cursor-pointer block w-full bg-[#5EB0FF] border-[2.5px] border-dashed border-[#111] rounded-[24px] py-10 px-4 text-center relative transition-transform active:scale-[0.98]">
+      <label className="cursor-pointer block w-full bg-[var(--sky)] border-[var(--bw)] border-dashed border-[var(--ink)] rounded-[22px] py-[22px] px-4 text-center relative grid gap-[6px] justify-items-center">
         <input 
           type="file" 
           accept=".pdf,image/png,image/jpeg" 
           className="hidden" 
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) alert(`Demo Mode: "${file.name}" received. Kami AI is scanning...`);
+            if (file) alert(`Demo Mode: "${file.name}" received. ClinixBridge AI is scanning...`);
           }} 
         />
-        <div className="mx-auto w-[54px] h-[54px] bg-white border-[2.5px] border-[#111] rounded-[16px] shadow-[3px_3px_0_#111] flex items-center justify-center mb-4 -rotate-[6deg]">
+        <div className="w-[54px] h-[54px] bg-white border-[var(--bw)] border-[var(--ink)] rounded-[16px] shadow-[3px_3px_0_var(--ink)] grid place-items-center -rotate-[6deg]">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="26" height="26">
             <path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/>
           </svg>
         </div>
-        <b className="block text-[19px] font-black mb-1.5 text-[#111]">Drop your blood report</b>
-        <span className="text-[12px] font-bold text-[#111] opacity-90">PDF or photo · CBC, Vit D, B12, iron profile</span>
+        <b className="block font-[var(--font-display)] font-normal text-[17px] mt-[6px]">Drop your blood report</b>
+        <span className="text-[13px] font-[600]">PDF or photo · CBC, Vit D, B12, iron profile</span>
       </label>
 
       {/* Paste Report Accordion */}
@@ -201,7 +201,7 @@ export default function ClinixBridgeApp() {
     const crits = rows.filter(r => r.s!.crit);
 
     return (
-      <div className="flex flex-col gap-3.5 pb-6">
+      <div className="grid gap-[14px] pb-6 content-start">
         <div className="hero-score">
           <div className="ring" style={{ "--p": pct } as React.CSSProperties}><span>{okCount}/{rows.length}</span></div>
           <div>
@@ -239,7 +239,7 @@ export default function ClinixBridgeApp() {
     const todayMeals = CLINIX_MEALS.filter(dietOK).slice(0, 4);
 
     return (
-      <div className="flex flex-col gap-3.5 pb-6">
+      <div className="grid gap-[14px] pb-6 content-start">
         <div className="grid grid-cols-[36px_1fr] gap-2.5 items-end">
           <div className="w-9 h-9 rounded-xl bg-[var(--tomato)] text-white border-[var(--bw)] border-[var(--ink)] flex items-center justify-center font-[var(--font-display)] text-[15px] -rotate-6">cb</div>
           <div className="bg-[var(--sun)] rounded-[20px_20px_20px_6px] p-3 text-sm font-medium border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)]">
@@ -266,7 +266,7 @@ export default function ClinixBridgeApp() {
   const renderProgress = () => {
     const activeMarker = MARKERS.find(m => m.id === pm) || MARKERS[0];
     return (
-      <div className="flex flex-col gap-3.5 pb-6">
+      <div className="grid gap-[14px] pb-6 content-start">
         <div className="bg-[var(--mint)] border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)] rounded-[22px] p-4 grid gap-1">
           <span className="label text-[var(--ink)]">RPM Dashboard Analytics</span>
           <div className="font-[var(--font-display)] text-[27px] leading-[1.05]">
@@ -298,7 +298,7 @@ export default function ClinixBridgeApp() {
 
   // --- TAB 5: PLANS ---
   const renderPlans = () => (
-    <div className="flex flex-col gap-3.5 pb-6">
+    <div className="grid gap-[14px] pb-6 content-start">
       <div className="bg-[var(--card)] border-[var(--bw)] border-[var(--ink)] rounded-[22px] p-4 grid gap-2.5 shadow-[var(--sh2)] bg-[var(--sun)]">
         <span className="pill bg-[var(--tomato)] text-white w-max">Hackathon Core</span>
         <span className="font-[var(--font-display)] text-[17px]">Clinical Guardrails</span>
@@ -313,8 +313,8 @@ export default function ClinixBridgeApp() {
 
   // --- RENDER FULL SCREEN APP ---
   return (
-    <div className="min-h-screen w-full font-[var(--font-body)] text-[#111]">
-      <div className="max-w-[540px] mx-auto w-full px-5 pt-6 pb-[120px] relative min-h-screen flex flex-col">
+    <div className="min-h-screen w-full font-[var(--font-body)] text-[#111]" style={{ background: "#FAFAFD" }}>
+      <div className="max-w-[560px] mx-auto w-full px-4 pb-[calc(118px+env(safe-area-inset-bottom,0px))] relative min-h-screen min-h-[100dvh] flex flex-col">
         
         {/* Brand Header */}
         {activeTab === "report" && (
@@ -373,7 +373,7 @@ export default function ClinixBridgeApp() {
         </div>
 
         {/* Dynamic Screen Content */}
-        <main className="relative z-10 flex-1 w-full">
+        <main className="relative z-10 flex-1 w-full grid gap-[14px] content-start">
           {activeTab === "report" && renderReport()}
           {activeTab === "scan" && renderScan()}
           {activeTab === "today" && renderToday()}
