@@ -13,11 +13,10 @@
     --mono: "Space Mono", ui-monospace, Menlo, Consolas, monospace;
   }
   
-  html, body { background: var(--paper); }
+  html, body { background: #ffffff; }
   body {
     color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5;
     padding-inline: 16px; padding-block: 28px 56px; min-height: 100vh; overflow-x: hidden;
-    background-image: radial-gradient(rgba(17,17,17,.13) 1.2px,transparent 1.3px); background-size: 22px 22px;
     /* Add these 3 lines to fix the cursor */
     user-select: none;
     -webkit-user-select: none;
