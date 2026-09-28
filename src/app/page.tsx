@@ -65,6 +65,14 @@ export default function ClinixBridgeApp() {
   const [vals, setVals] = useState<any>({ ...SAMPLE });
   const [pm, setPm] = useState("vitd"); 
 
+  // Today tab interactive state
+  const [day, setDay] = useState(2);
+  const [done, setDone] = useState<Record<string, number | null>>({"0-0":1,"0-1":1,"0-2":0.5,"0-3":1,"1-0":1,"1-1":0,"1-2":1,"1-3":1.5,"2-0":1});
+  const [swaps, setSwaps] = useState<Record<string, number>>({});
+  const [addon, setAddon] = useState<Record<string, string[]>>({"0":["curd"],"1":["egg","milk"]});
+  const [pgoal, setPgoal] = useState(0.83);
+  const [reports, setReports] = useState<any[]>([...SAMPLE_HISTORY]);
+
   const fetchReports = async () => {
     const { data, error } = await supabase
       .from('reports')
@@ -114,6 +122,53 @@ export default function ClinixBridgeApp() {
     if (v > hi) return { k: "mid", label: "High" };
     return { k: "ok", label: "Good" };
   };
+
+  const needs = () => {
+    const w: Record<string, number> = {};
+    MARKERS.forEach(m => { 
+      const s = getStatus(m); 
+      if (!s || s.label === "High") return; 
+      const add = s.k === "low" ? 3 : s.k === "mid" ? 1.5 : 0; 
+      w[m.nut] = Math.max(w[m.nut] || 0, add); 
+    });
+    if (w.iron) w.vitc = 1;
+    return w;
+  };
+
+  const dietOK = (m: any) => diet === "n" || (diet === "e" ? m.d !== "n" : m.d === "v");
+
+  const planFor = (dIndex: number) => {
+    const w = needs(); 
+    const out: any[] = [];
+    ["b","l","s","d"].forEach((slot, si) => {
+      const pool = CLINIX_MEALS.filter(m => m.s === slot && dietOK(m))
+        .map(m => ({ m, sc: m.n.reduce((a:number, n:string) => a + (w[n] || 0), 0) + m.g / 25 }))
+        .sort((a, b) => b.sc - a.sc);
+      const top = pool.slice(0, Math.max(3, Math.min(5, pool.length)));
+      const off = (swaps[dIndex + "-" + slot] || 0);
+      out.push(top[(dIndex * 3 + si + off) % top.length].m);
+    });
+    return out;
+  };
+
+  const amt = (k: string) => { const v = done[k]; return v === true ? 1 : (typeof v === "number" ? v : null); };
+  const dayTotal = (dIndex: number) => [0,1,2,3].reduce((a, i) => a + (amt(dIndex + "-" + i) || 0), 0);
+  const target = () => Math.round((parseFloat(weight) || 58) * pgoal);
+  
+  // Need to define ADDONS array before using it
+  const ADDONS = [
+    {id:"egg",t:"1 boiled egg",g:6,d:"e"},{id:"curd",t:"1 katori curd",g:6,d:"v"},{id:"milk",t:"1 glass milk",g:8,d:"v"},
+    {id:"chana",t:"Handful roasted chana",g:7,d:"v"},{id:"paneer",t:"Few paneer cubes",g:9,d:"v"},{id:"sattu",t:"Sattu drink",g:10,d:"v"},
+    {id:"peanut",t:"2 tbsp peanuts",g:5,d:"v"}
+  ];
+  
+  const addonG = (dIndex: number) => (addon[dIndex] || []).reduce((a, id) => a + (ADDONS.find(x => x.id === id)?.g || 0), 0);
+  const dayProtein = (dIndex: number) => { 
+    const p = planFor(dIndex); 
+    return Math.round(p.reduce((a, m, i) => a + (amt(dIndex + "-" + i) || 0) * m.g, 0) + addonG(dIndex)); 
+  };
+  const mealLevel = (g: number) => g >= 20 ? { n: 3, t: "High protein" } : g >= 12 ? { n: 2, t: "Good protein" } : g >= 6 ? { n: 1, t: "Some protein" } : { n: 0, t: "Light on protein" };
+  const dayLevel = (r: number) => r >= 0.9 ? { k: "ok", t: "On track" } : r >= 0.5 ? { k: "mid", t: "Getting there" } : { k: "low", t: "Low so far" };
 
   // --- TAB 1: REPORT ---
   const renderReport = () => (
@@ -281,29 +336,150 @@ export default function ClinixBridgeApp() {
 
   // --- TAB 3: TODAY ---
   const renderToday = () => {
-    const dietOK = (m: any) => diet === "n" || (diet === "e" ? m.d !== "n" : m.d === "v");
-    const todayMeals = CLINIX_MEALS.filter(dietOK).slice(0, 4);
+    const w = needs(); 
+    const focus = Object.keys(w).filter(k => w[k] >= 3 && k !== "vitc").map(k => NUT_LABEL[k as keyof typeof NUT_LABEL]);
+    const plan = planFor(day); 
+    const key = (i: number) => day + "-" + i;
+    const total = dayTotal(day);
+    const logged = [0,1,2,3].filter(i => amt(key(i)) != null).length;
+    let streak = 0; 
+    for(let d=0; d<7; d++){ if(dayTotal(d)>=3) streak++; }
+    const pct = Math.round(total/4*100);
+    const tg = target();
+    const pe = dayProtein(day);
+    const planned = Math.round(plan.reduce((a,m) => a + m.g, 0) + addonG(day));
+    const lv = dayLevel(pe/tg);
+    const myAdd = addon[day] || [];
+    const addons = ADDONS.filter(a => a.d === "v" || diet !== "v");
 
     return (
       <div className="grid gap-[14px] pb-6 content-start">
-        <div className="grid grid-cols-[36px_1fr] gap-2.5 items-end">
-          <div className="w-9 h-9 rounded-xl bg-[var(--tomato)] text-white border-[var(--bw)] border-[var(--ink)] flex items-center justify-center font-display text-[15px] -rotate-6">cb</div>
-          <div className="bg-[var(--sun)] rounded-[20px_20px_20px_6px] p-3 text-sm font-medium border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)]">
-            Morning Neel! Day 1 of your homeostatic protocol. All recipes below prioritize zero-waste cooking to maximize bioavailability.
+        <div className="flex gap-[12px] items-center">
+          <div className="w-[40px] h-[40px] rounded-[13px] bg-[#B69CFF] border-[2.5px] border-[#111] shadow-[2px_2px_0_#111] flex items-center justify-center font-display text-[15px]">cb</div>
+          <div className="bg-[#FFD23F] rounded-[20px_20px_20px_6px] px-[14px] py-[10px] text-[13.5px] font-[500] leading-[1.3] border-[2.5px] border-[#111] shadow-[4px_4px_0_#111] flex-1">
+            Morning {currentUser}! Day {day+1} of your plan. Today we're pushing <b>{focus.length ? focus.join(", ") : "balance"}</b>. Everything below is from your kitchen or the kirana store.
           </div>
         </div>
-        {todayMeals.map((m, i) => (
-          <div key={i} className="grid grid-cols-[auto_1fr] gap-3 items-start bg-[var(--card)] rounded-[20px] p-3 border-[var(--bw)] border-[var(--ink)] shadow-[var(--sh)]">
-            <span className={`w-11 h-11 rounded-xl flex items-center justify-center font-display text-[17px] border-[var(--bw)] border-[var(--ink)] ${m.s === 'b' ? 'bg-[var(--sun)] text-[var(--ink)]' : m.s === 'l' ? 'bg-[var(--tomato)] text-white' : m.s === 's' ? 'bg-[var(--sky)] text-[var(--ink)]' : 'bg-[var(--lilac)] text-[var(--ink)]'}`}>
-              {TILE[m.s]}
+        
+        <div className="flex bg-[#F4F7FF] border-[2.5px] border-[#111] rounded-[18px] p-[3px] shadow-[4px_4px_0_#111]">
+          {DAYN.map((d, i) => (
+            <button key={i} className={`flex-1 flex flex-col items-center justify-center py-[6px] rounded-[14px] border-[2.5px] transition-all ${day === i ? 'bg-[#FF5A36] border-[#111] text-white shadow-[2px_2px_0_#111]' : 'border-transparent text-[#77778A] hover:bg-[#E3E8FF] hover:text-[#111]'}`} onClick={() => setDay(i)}>
+              <small className="text-[10px] font-[800] uppercase tracking-wider">{d}</small>
+              <span className="text-[17px] font-display mt-[1px]">{i+1}</span>
+            </button>
+          ))}
+        </div>
+        
+        <div className="bg-white border-[2.5px] border-[#111] rounded-[18px] p-3 shadow-[4px_4px_0_#111] flex items-center justify-between font-display text-[15px]">
+          <span>{pct}% of plan</span>
+          <span className="flex-1 mx-3 h-3 bg-[#F4F7FF] rounded-full border-[2px] border-[#111] overflow-hidden">
+            <i className="block h-full bg-[#33D69F] border-r-[2px] border-[#111]" style={{ width: `${Math.min(100, pct)}%` }} />
+          </span>
+          <span className="text-[#FF5A36]">{streak} day streak</span>
+        </div>
+
+        <div className="bg-[#E3E8FF] border-[2.5px] border-[#111] rounded-[22px] p-[16px] shadow-[4px_4px_0_#111]">
+          <div className="flex justify-between items-center mb-1"><span className="text-[12px] font-[800] uppercase tracking-wider text-[#111]">Protein today</span>
+            <span className="flex gap-[3px]" aria-hidden="true">
+              {[1,2,3].map(i => <i key={i} className={`w-[6px] h-[6px] rounded-full ${i <= (lv.k==="ok"?3:lv.k==="mid"?2:1) ? "bg-[#111]" : "bg-[#111] opacity-20"}`} />)}
+            </span>
+          </div>
+          <div className="mb-3"><b className={`font-display text-[22px] ${lv.k==="low"?"text-[#FF5A36]":lv.k==="mid"?"text-[#E5A500]":"text-[#33D69F]"}`}>{lv.t}</b></div>
+          <div className="relative h-4 bg-white border-[2.5px] border-[#111] rounded-full overflow-hidden mb-1">
+            <i className="absolute top-0 bottom-0 left-0 bg-[#FF5A36]" style={{ width: `${Math.min(100, pe/tg*100)}%` }} />
+            <s className="absolute top-0 bottom-0 w-[3px] bg-[#111] z-10" style={{ left: `${Math.min(100, planned/tg*100)}%` }} title="Full plan" />
+          </div>
+          <div className="flex justify-between text-[10.5px] font-[800] text-[#77778A] mb-3"><span>Low</span><span>Getting there</span><span>On track</span></div>
+          <p className="text-[13px] font-[600] m-0 mb-3 leading-[1.3]">
+            {lv.k==="ok" ? "Your protein looks good for today." : planned/tg>=.9 ? "Eat the rest of today's plan and you'll be on track." : "Today's plan is a little light. Add one of these to any meal:"}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {addons.map(a => (
+              <button key={a.id} className="bg-white border-[2.5px] border-[#111] rounded-[10px] px-3 py-1.5 text-[12px] font-[800] shadow-[2px_2px_0_#111] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all" onClick={() => {
+                setAddon(prev => ({...prev, [day]: [...(prev[day]||[]), a.id]}));
+              }}>+ {a.t}</button>
+            ))}
+          </div>
+          {myAdd.length > 0 && (
+            <p className="text-[13px] font-[600] mt-3 mb-0">Added: {myAdd.map(id=>ADDONS.find(a=>a.id===id)?.t).filter(Boolean).join(", ")} · <button className="text-[#FF5A36] underline font-[800]" onClick={() => {
+              setAddon(prev => { const n={...prev}; delete n[day]; return n; });
+            }}>Clear</button></p>
+          )}
+        </div>
+
+        {w.vitd && (
+          <div className="flex gap-[12px] bg-[#FFF6D6] border-[2.5px] border-[#111] rounded-[22px] p-[16px] shadow-[4px_4px_0_#111]">
+            <span className="w-[44px] h-[44px] shrink-0 bg-white border-[2.5px] border-[#111] rounded-[14px] shadow-[3px_3px_0_#111] flex items-center justify-center text-[#FFD23F] -rotate-[6deg]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" width="24" height="24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
             </span>
             <div>
-              <div className="text-[10.5px] font-extrabold tracking-widest uppercase text-[var(--muted)]">{SLOT[m.s]}</div>
-              <div className="font-extrabold text-[15.5px] my-0.5 leading-tight">{m.t}</div>
-              <p className="text-[12.5px] text-[var(--muted)] m-0">{m.x}</p>
+              <b className="block font-display text-[16px] mb-[2px]">Sun break · 10:30 am</b>
+              <span className="text-[13.5px] font-[500] leading-[1.3] block">20 minutes of sun on your arms and face. The cheapest Vitamin D there is.</span>
             </div>
           </div>
-        ))}
+        )}
+
+        {plan.map((m, i) => {
+          const k = key(i);
+          const a = amt(k);
+          return (
+            <div key={i} className={`bg-white border-[2.5px] border-[#111] rounded-[22px] p-[16px] shadow-[4px_4px_0_#111] ${a==null?'':a===0?'opacity-50 grayscale':''}`}>
+              <div className="flex gap-[12px] items-start mb-3">
+                <span className={`w-[44px] h-[44px] shrink-0 rounded-[14px] border-[2.5px] border-[#111] shadow-[3px_3px_0_#111] flex items-center justify-center font-display text-[18px] ${a!=null&&a>0?'bg-[#33D69F] text-white':'bg-[#F4F7FF] text-[#111]'}`}>
+                  {a!=null&&a>0 ? <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5 9-10"/></svg> : TILE[m.s as keyof typeof TILE]}
+                </span>
+                <div className="flex-1">
+                  <div className="text-[11px] font-[800] uppercase tracking-wider text-[#77778A]">{SLOT[m.s as keyof typeof SLOT]}</div>
+                  <div className="font-display text-[18px] leading-[1.1] my-1">{m.t}</div>
+                  <div className="flex items-center gap-[6px] text-[13px] font-[700] text-[#111]">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16"><path d="M3 11h18a9 9 0 0 1-18 0z"/><path d="M8 7c0-1 1-1 1-2M12 7c0-1 1-1 1-2M16 7c0-1 1-1 1-2"/></svg>
+                    {m.p}
+                  </div>
+                  <p className="text-[13px] font-[500] text-[#4A4A55] leading-[1.3] mt-2 mb-0">{m.x}</p>
+                  
+                  <div className="flex flex-wrap gap-2 mt-3 items-center">
+                    {m.n.filter((n:string) => w[n]).map((n:string) => (
+                      <span key={n} className="bg-[#FFE9E6] text-[#FF5A36] border-[2px] border-[#FF5A36] rounded-[6px] px-2 py-0.5 text-[10.5px] font-[800]">+ {NUT_LABEL[n as keyof typeof NUT_LABEL]}</span>
+                    ))}
+                    <button className="text-[11.5px] font-[800] text-[#77778A] underline ml-auto" onClick={() => {
+                      setSwaps(prev => ({...prev, [day+"-"+m.s]: (prev[day+"-"+m.s]||0)+1}));
+                    }}>Swap ↻</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex bg-[#F4F7FF] border-[2.5px] border-[#111] rounded-[16px] p-[3px]">
+                {AMTS.map(([v, l]) => (
+                  <button key={l as string} className={`flex-1 py-[8px] text-[12.5px] font-[800] rounded-[12px] transition-all border-[2.5px] ${a===v ? 'bg-[#FFD23F] border-[#111] text-[#111] shadow-[2px_2px_0_#111]' : 'bg-transparent border-transparent text-[#77778A] hover:bg-white hover:text-[#111]'}`} onClick={() => {
+                    setDone(prev => {
+                      const n={...prev};
+                      if (n[k] === v) delete n[k]; else n[k] = v as number;
+                      return n;
+                    });
+                  }}>
+                    {l as string}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+        
+        <p className="text-center text-[12.5px] font-[600] text-[#77778A] mb-0 mt-2 px-4">
+          {logged}/4 meals logged today · Tap how much you ate. Half and Extra count toward your score.
+        </p>
+
+        {w.iron && (
+          <div className="flex gap-[12px] bg-[#FFE9E6] border-[2.5px] border-[#111] rounded-[22px] p-[16px] shadow-[4px_4px_0_#111]">
+            <span className="w-[44px] h-[44px] shrink-0 bg-white border-[2.5px] border-[#111] rounded-[14px] shadow-[3px_3px_0_#111] flex items-center justify-center text-[#FF5A36] rotate-[6deg]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="24" height="24"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17M8 3v3M12 3v3"/></svg>
+            </span>
+            <div>
+              <b className="block font-display text-[16px] mb-[2px]">Chai timing</b>
+              <span className="text-[13.5px] font-[500] leading-[1.3] block">Keep tea and coffee an hour away from iron-rich meals. They block absorption.</span>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
