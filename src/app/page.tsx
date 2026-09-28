@@ -308,9 +308,16 @@ export default function ClinixBridgeApp() {
 
   // --- RENDER FULL SCREEN APP ---
   return (
-    <div className="min-h-screen w-full font-[var(--font-body)] text-[#111] bg-white">
-      {/* BORDERLESS CENTRAL COLUMN: Removed bg-white, border-x-2, and shadow-2xl */}
-      <div className="max-w-[520px] mx-auto w-full px-4 pt-6 pb-[120px] relative min-h-screen flex flex-col">
+    <div 
+      className="min-h-screen w-full font-[var(--font-body)] text-[#111]"
+      style={{ 
+        backgroundColor: "#F4F7FF", 
+        backgroundImage: "radial-gradient(#CBD5E1 1px, transparent 1px)", 
+        backgroundSize: "24px 24px",
+        backgroundPosition: "0 0"
+      }}
+    >
+      <div className="max-w-[540px] mx-auto w-full px-5 pt-6 pb-[120px] relative min-h-screen flex flex-col bg-white">
         
         {/* Brand Header */}
         {activeTab === "report" && (
