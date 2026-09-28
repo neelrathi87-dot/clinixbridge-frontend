@@ -318,18 +318,18 @@ export default function ClinixBridgeApp() {
         
         {/* Brand Header */}
         {activeTab === "report" && (
-          <div className="grid gap-4 pt-4 pb-2 relative z-10 w-full max-w-[560px] mx-auto px-4">
-            <div className="flex items-center gap-2.5 font-[var(--font-display)] text-[24px] tracking-tight mb-2">
-              <span className="w-[38px] h-[38px] rounded-[12px] bg-[#FF5B37] border-[2.5px] border-[#111] shadow-[3px_3px_0_#111] flex items-center justify-center text-white text-[18px] -rotate-[8deg]">cb</span>
+          <div className="grid gap-[10px] pt-[18px] pb-[4px] px-[2px] relative z-10 w-full max-w-[560px] mx-auto">
+            <div className="flex items-center gap-[10px] font-[var(--font-display)] text-[22px] tracking-tight">
+              <span className="w-[38px] h-[38px] rounded-[12px] bg-[#FF5A36] border-[2.5px] border-[#111] shadow-[3px_3px_0_#111] flex items-center justify-center text-white text-[18px] -rotate-[8deg]">cb</span>
               ClinixBridge
             </div>
             
-            <h1 className="font-[var(--font-display)] font-normal text-[clamp(36px,9vw,70px)] leading-[1] tracking-[-0.03em] m-0 text-[#111] text-balance">
-              Your blood report, turned into <span className="bg-[#FFD23F] px-[0.12em] border-[2.5px] border-[#111] rounded-[0.18em] shadow-[4px_4px_0_#111] box-decoration-clone leading-[1.25]">tomorrow's breakfast.</span> Not <span className="relative text-[#77778A] after:content-[''] after:absolute after:-left-[4%] after:-right-[4%] after:top-[50%] after:h-[0.13em] after:bg-[#FF5B37] after:-rotate-[7deg] after:rounded-[4px]">pills</span>.
+            <h1 className="font-[var(--font-display)] font-normal text-[clamp(30px,9vw,42px)] leading-[1.02] tracking-[-0.03em] m-0 text-[#111] text-balance">
+              Your blood report, turned into <span className="bg-[#FFD23F] px-[0.12em] border-[2.5px] border-[#111] rounded-[0.18em] shadow-[4px_4px_0_#111] box-decoration-clone leading-[1.25]">tomorrow's breakfast.</span> Not <span className="relative text-[#77778A] after:content-[''] after:absolute after:-left-[4%] after:-right-[4%] after:top-[50%] after:h-[0.13em] after:bg-[#FF5A36] after:-rotate-[7deg] after:rounded-[4px]">pills</span>.
             </h1>
             
-            <p className="text-[18px] text-[#4A4A55] font-[var(--font-body)] m-0 mt-2 max-w-[50ch]">
-              Upload a nutrition blood test. ClinixBridge spots what's running low, like <b className="text-[#111] font-extrabold">iron, B12 or Vitamin D</b>, and plans every meal from food you already have at home or can grab at the kirana store.
+            <p className="text-[14px] text-[#4A4A55] font-[var(--font-body)] m-0">
+              Upload your report. ClinixBridge plans every meal from food at home or the kirana store.
             </p>
           </div>
         )}
