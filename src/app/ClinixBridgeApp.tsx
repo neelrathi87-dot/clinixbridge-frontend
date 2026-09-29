@@ -357,7 +357,7 @@ export default function ClinixBridgeApp() {
                   ))}
                   <button 
                     className="swap" 
-                    onClick={() => setSwaps(prev => ({ ...prev, [day + "-" + m.s]: (prev[day + "-" + m.s] || 0) + 1 }))}
+                    onClick={() => setSwaps(prev => ({ ...prev, [day + m.s]: (prev[day + m.s] || 0) + 1 }))}
                   >
                     Swap ↻
                   </button>
