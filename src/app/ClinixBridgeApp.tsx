@@ -202,7 +202,8 @@ export default function ClinixBridgeApp() {
       let opts = MEALS[cat].filter((m: any) => m.d === diet || (diet !== "v" && m.d === "v"));
       if (!opts.length) opts = MEALS[cat];
       opts = opts.sort((a: any, b: any) => scores(b) - scores(a));
-      return opts[Math.abs(hash(dIndex + cat + (swaps[dIndex + cat] || 0))) % opts.length];
+      const chosen = opts[Math.abs(hash(dIndex + cat + (swaps[dIndex + "-" + cat] || 0))) % opts.length];
+        return { ...chosen, s: cat };
     };
     return [getBest("b"), getBest("l"), getBest("s"), getBest("d")];
   };
@@ -365,7 +366,7 @@ export default function ClinixBridgeApp() {
                   ))}
                   <button 
                     className="swap" 
-                    onClick={() => setSwaps(prev => ({ ...prev, [day + m.s]: (prev[day + m.s] || 0) + 1 }))}
+                    onClick={() => setSwaps(prev => ({ ...prev, [day + "-" + m.s]: (prev[day + "-" + m.s] || 0) + 1 }))}
                   >
                     Swap ↻
                   </button>
