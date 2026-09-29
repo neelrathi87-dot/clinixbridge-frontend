@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -230,7 +230,7 @@ export default function ClinixBridgeApp() {
     const pct = Math.round(total / 4 * 100);
     const tg = target();
     const pe = dayProtein(day);
-    const planned = Math.round(plan.reduce((a: number, m: any) => a + m.g, 0) + addonG(day));
+    const planned = Math.round(plan.reduce((a: number, m: any) => a + m.g, 0));
     const lv = dayLevel(pe / tg);
     const myAdd = addon[day] || [];
     const addons = ADDONS.filter(a => a.d === "v" || diet !== "v");
