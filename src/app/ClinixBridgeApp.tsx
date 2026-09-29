@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
 // --- CONSTANTS & DATA ---
-const NUT_LABEL = { iron: "Iron", b12: "B12", vitd: "Vit D", vitc: "Vit C", calcium: "Calcium", mag: "Magnesium", zinc: "Zinc", folate: "Folate" };
+const NUT_LABEL: any = { iron: "Iron", b12: "B12", vitd: "Vit D", vitc: "Vit C", calcium: "Calcium", mag: "Magnesium", zinc: "Zinc", folate: "Folate", tlc: "WBC Boost", neutro: "Neutrophils", lympho: "Lymphocytes", rbc: "RBC Boost", eosino: "Eosinophils", mono: "Monocytes", baso: "Basophils", hct: "HCT", mcv: "MCV", mch: "MCH", mchc: "MCHC" };
 const FOODS: any = {
   iron: "Moong, chana, palak, methi, bajra, seeds, raisins.",
   b12: "Curd, milk, paneer, eggs, chicken, fish. (Very hard on purely veg diet).",
@@ -64,7 +64,9 @@ const SAMPLE_HISTORY = [
 
 const MEALS: any = {
   b: [
-    { t: "Moong sprout chilla + curd", d: "v", g: 14, m: "2 chilla + 1 katori curd", v: "Blend soaked moong, add onion and coriander.", n: ["iron", "b12", "zinc", "calcium"] },
+      { t: "Bajra Roti + Moringa Dal", d: "v", g: 10, m: "1 roti + 1 bowl dal", v: "Use fresh moringa leaves if available.", n: ["iron", "zinc", "vitc", "rbc", "lympho", "tlc"] },
+      { t: "Guava & Curd Bowl", d: "v", g: 8, m: "1 guava chopped + 1 katori curd", v: "Sprinkle black salt for taste.", n: ["vitc", "b12", "calcium", "tlc", "neutro", "mcv"] },
+      { t: "Moong sprout chilla + curd", d: "v", g: 14, m: "2 chilla + 1 katori curd", v: "Blend soaked moong, add onion and coriander.", n: ["iron", "b12", "zinc", "calcium"] },
     { t: "Besan chilla + curd", d: "v", g: 12, m: "2 chilla + 1 katori curd", v: "Add spinach and ajwain to batter.", n: ["iron", "b12", "calcium"] },
     { t: "Oats upma + peanuts", d: "v", g: 9, m: "1 big bowl", v: "Load with carrots, peas, and roasted peanuts.", n: ["iron", "mag"] },
     { t: "Poha + sprouts", d: "v", g: 8, m: "1 bowl poha + half bowl sprouts", v: "Squeeze lemon on poha (Vit C helps iron!).", n: ["iron", "vitc"] },
@@ -72,21 +74,24 @@ const MEALS: any = {
     { t: "Paneer bhurji + paratha", d: "v", g: 16, m: "1 bowl bhurji + 1 paratha", v: "Use 50g paneer, add capsicum.", n: ["b12", "calcium"] }
   ],
   l: [
-    { t: "Rajma chawal + curd", d: "v", g: 15, m: "1 bowl rajma + 1 bowl rice + 1 katori curd", v: "Add a side of cucumber salad.", n: ["iron", "b12", "zinc", "folate"] },
+      { t: "Palak Paneer + Bajra Roti", d: "v", g: 18, m: "1 bowl palak paneer + 2 rotis", v: "Rich in iron and calcium.", n: ["iron", "calcium", "b12", "zinc", "rbc", "mchc"] },
+      { t: "Rajma chawal + curd", d: "v", g: 15, m: "1 bowl rajma + 1 bowl rice + 1 katori curd", v: "Add a side of cucumber salad.", n: ["iron", "b12", "zinc", "folate"] },
     { t: "Chole + roti + palak", d: "v", g: 18, m: "1 bowl chole + 2 roti + half bowl palak", v: "Squeeze lemon on palak.", n: ["iron", "zinc", "vitc", "folate", "calcium"] },
     { t: "Dal tadka + methi roti", d: "v", g: 14, m: "1 big bowl dal + 2 methi rotis", v: "Mix fresh methi in dough.", n: ["iron", "calcium", "folate"] },
     { t: "Chicken curry + rice", d: "n", g: 25, m: "3 pieces chicken + 1 bowl rice", v: "Home style, less oil.", n: ["b12", "iron", "zinc"] },
     { t: "Egg curry + roti", d: "e", g: 16, m: "2 eggs in gravy + 2 roti", v: "Add peas to the gravy.", n: ["b12", "vitd", "iron"] }
   ],
   d: [
-    { t: "Khichdi + curd", d: "v", g: 12, m: "1 big bowl moong dal khichdi + 1 katori curd", v: "Put extra dal, less rice.", n: ["iron", "b12", "mag"] },
+      { t: "Moringa Soup + Moong Khichdi", d: "v", g: 12, m: "1 bowl soup + 1 bowl khichdi", v: "Light but packed with zinc and iron.", n: ["iron", "zinc", "vitc", "lympho", "rbc", "mch"] },
+      { t: "Khichdi + curd", d: "v", g: 12, m: "1 big bowl moong dal khichdi + 1 katori curd", v: "Put extra dal, less rice.", n: ["iron", "b12", "mag"] },
     { t: "Paneer sabzi + roti", d: "v", g: 16, m: "1 bowl sabzi + 2 roti", v: "Palak paneer or matar paneer.", n: ["b12", "calcium", "iron", "folate"] },
     { t: "Soya chunks pulao", d: "v", g: 18, m: "1 big bowl", v: "Add beans and carrots.", n: ["iron", "zinc", "mag"] },
     { t: "Mixed dal + daliya", d: "v", g: 14, m: "1 bowl dal + 1 bowl cooked daliya", v: "Very light, high fibre.", n: ["iron", "mag", "folate"] },
     { t: "Fish curry + rice", d: "n", g: 22, m: "2 pieces fish + 1 bowl rice", v: "Fish is great for Vit D and B12.", n: ["b12", "vitd"] }
   ],
   s: [
-    { t: "Roasted makhana & peanuts", d: "v", g: 6, m: "1 handful mixed", v: "Dry roast with a little salt.", n: ["mag", "calcium"] },
+      { t: "Amla Shot + Roasted Chana", d: "v", g: 6, m: "30ml amla juice + handful chana", v: "Immense Vitamin C boost for immunity.", n: ["vitc", "iron", "folate", "tlc", "neutro"] },
+      { t: "Roasted makhana & peanuts", d: "v", g: 6, m: "1 handful mixed", v: "Dry roast with a little salt.", n: ["mag", "calcium"] },
     { t: "Fruit + mixed seeds", d: "v", g: 4, m: "1 apple/banana + 1 tbsp pumpkin/chia seeds", v: "Seeds are magnesium powerhouses.", n: ["mag", "zinc"] },
     { t: "Sattu drink", d: "v", g: 6, m: "1 tall glass", v: "Mix roasted chana powder in water with jeera.", n: ["iron", "mag"] },
     { t: "Sprouted moong chaat", d: "v", g: 7, m: "1 small bowl", v: "Raw sprouts, onion, tomato, lemon.", n: ["iron", "vitc", "folate"] }
@@ -186,13 +191,21 @@ export default function ClinixBridgeApp() {
   };
 
   const needs = () => {
-    const w: any = {};
-    MARKERS.forEach(m => {
-      const s = getStatus(m);
-      if (s && s.k !== "ok") w[m.nut] = (w[m.nut] || 0) + (s.k === "low" ? 3 : 1);
-    });
-    return w;
-  };
+      const w: any = {};
+      MARKERS.forEach(m => {
+        const s = getStatus(m);
+        if (s && s.k !== "ok") {
+          const add = s.k === "low" ? 3 : 1;
+          w[m.nut] = (w[m.nut] || 0) + add;
+          w[m.id] = (w[m.id] || 0) + add; // Dynamically add exact marker IDs
+        }
+      });
+      // Fallback state: if nothing is needed (all ok), prioritize a maintenance diet
+      if (Object.keys(w).length === 0) {
+        w.iron = 1; w.zinc = 1; w.b12 = 1; w.vitc = 1;
+      }
+      return w;
+    };
 
   const hash = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = Math.imul(31, h) + s.charCodeAt(i) | 0; return h; };
   const planFor = (dIndex: number) => {
