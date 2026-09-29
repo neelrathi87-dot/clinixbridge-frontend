@@ -836,7 +836,7 @@ export default function ClinixBridgeApp() {
             <input 
               type="number" 
               inputMode="decimal" 
-              value={vals[m.id] === "" ? "" : vals[m.id]} 
+              value={vals[m.id] ?? ""} 
               onChange={(e) => setVals((prev: any) => ({ ...prev, [m.id]: e.target.value === "" ? "" : +e.target.value }))} 
             />
             <span className="u">{m.unit}</span>
