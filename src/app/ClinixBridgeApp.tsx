@@ -64,37 +64,43 @@ const SAMPLE_HISTORY = [
 
 const MEALS: any = {
   b: [
-      { t: "Bajra Roti + Moringa Dal", d: "v", g: 10, m: "1 roti + 1 bowl dal", v: "Use fresh moringa leaves if available.", n: ["iron", "zinc", "vitc", "rbc", "lympho", "tlc"] },
-      { t: "Guava & Curd Bowl", d: "v", g: 8, m: "1 guava chopped + 1 katori curd", v: "Sprinkle black salt for taste.", n: ["vitc", "b12", "calcium", "tlc", "neutro", "mcv"] },
-      { t: "Moong sprout chilla + curd", d: "v", g: 14, m: "2 chilla + 1 katori curd", v: "Blend soaked moong, add onion and coriander.", n: ["iron", "b12", "zinc", "calcium"] },
-    { t: "Besan chilla + curd", d: "v", g: 12, m: "2 chilla + 1 katori curd", v: "Add spinach and ajwain to batter.", n: ["iron", "b12", "calcium"] },
-    { t: "Oats upma + peanuts", d: "v", g: 9, m: "1 big bowl", v: "Load with carrots, peas, and roasted peanuts.", n: ["iron", "mag"] },
-    { t: "Poha + sprouts", d: "v", g: 8, m: "1 bowl poha + half bowl sprouts", v: "Squeeze lemon on poha (Vit C helps iron!).", n: ["iron", "vitc"] },
-    { t: "Boiled eggs + toast", d: "e", g: 14, m: "2 eggs + 2 slice whole wheat toast", v: "Sprinkle salt and pepper.", n: ["b12", "vitd", "zinc", "iron"] },
-    { t: "Paneer bhurji + paratha", d: "v", g: 16, m: "1 bowl bhurji + 1 paratha", v: "Use 50g paneer, add capsicum.", n: ["b12", "calcium"] }
+      { t: "Overnight Oats with Sabja & Almonds", d: "v", g: 12, p: "1 bowl", x: "Requires no cooking heat, preserving delicate vitamins and maximizing nutrient absorption.", n: ["calcium", "iron", "vitc"] },
+      { t: "Poha with Peanuts & Lemon", d: "v", g: 8, p: "1 big bowl", x: "Lemon juice added post-cooking to prevent Vitamin C destruction by heat, maximizing iron absorption.", n: ["iron", "vitc", "tlc"] },
+      { t: "Bajra Roti + Moringa Dal", d: "v", g: 10, p: "1 roti + 1 bowl dal", x: "Use fresh moringa leaves if available.", n: ["iron", "zinc", "vitc", "rbc", "lympho", "tlc"] },
+      { t: "Guava & Curd Bowl", d: "v", g: 8, p: "1 guava chopped + 1 katori curd", x: "Sprinkle black salt for taste.", n: ["vitc", "b12", "calcium", "tlc", "neutro", "mcv"] },
+      { t: "Moong sprout chilla + curd", d: "v", g: 14, p: "2 chilla + 1 katori curd", x: "Blend soaked moong, add onion and coriander.", n: ["iron", "b12", "zinc", "calcium"] },
+    { t: "Besan chilla + curd", d: "v", g: 12, p: "2 chilla + 1 katori curd", x: "Add spinach and ajwain to batter.", n: ["iron", "b12", "calcium"] },
+    { t: "Oats upma + peanuts", d: "v", g: 9, p: "1 big bowl", x: "Load with carrots, peas, and roasted peanuts.", n: ["iron", "mag"] },
+    { t: "Poha + sprouts", d: "v", g: 8, p: "1 bowl poha + half bowl sprouts", x: "Squeeze lemon on poha (Vit C helps iron!).", n: ["iron", "vitc"] },
+    { t: "Boiled eggs + toast", d: "e", g: 14, p: "2 eggs + 2 slice whole wheat toast", x: "Sprinkle salt and pepper.", n: ["b12", "vitd", "zinc", "iron"] },
+    { t: "Paneer bhurji + paratha", d: "v", g: 16, p: "1 bowl bhurji + 1 paratha", x: "Use 50g paneer, add capsicum.", n: ["b12", "calcium"] }
   ],
   l: [
-      { t: "Palak Paneer + Bajra Roti", d: "v", g: 18, m: "1 bowl palak paneer + 2 rotis", v: "Rich in iron and calcium.", n: ["iron", "calcium", "b12", "zinc", "rbc", "mchc"] },
-      { t: "Rajma chawal + curd", d: "v", g: 15, m: "1 bowl rajma + 1 bowl rice + 1 katori curd", v: "Add a side of cucumber salad.", n: ["iron", "b12", "zinc", "folate"] },
-    { t: "Chole + roti + palak", d: "v", g: 18, m: "1 bowl chole + 2 roti + half bowl palak", v: "Squeeze lemon on palak.", n: ["iron", "zinc", "vitc", "folate", "calcium"] },
-    { t: "Dal tadka + methi roti", d: "v", g: 14, m: "1 big bowl dal + 2 methi rotis", v: "Mix fresh methi in dough.", n: ["iron", "calcium", "folate"] },
-    { t: "Chicken curry + rice", d: "n", g: 25, m: "3 pieces chicken + 1 bowl rice", v: "Home style, less oil.", n: ["b12", "iron", "zinc"] },
-    { t: "Egg curry + roti", d: "e", g: 16, m: "2 eggs in gravy + 2 roti", v: "Add peas to the gravy.", n: ["b12", "vitd", "iron"] }
+      { t: "Soya Chunks Pulao", d: "v", g: 20, p: "1 large bowl", x: "Extremely high in protein and iron, making it a budget-friendly powerhouse for RBCs.", n: ["iron", "rbc", "hct"] },
+      { t: "Palak Paneer + Bajra Roti", d: "v", g: 18, p: "1 bowl palak paneer + 2 rotis", x: "Rich in iron and calcium.", n: ["iron", "calcium", "b12", "zinc", "rbc", "mchc"] },
+      { t: "Rajma chawal + curd", d: "v", g: 15, p: "1 bowl rajma + 1 bowl rice + 1 katori curd", x: "Add a side of cucumber salad.", n: ["iron", "b12", "zinc", "folate"] },
+    { t: "Chole + roti + palak", d: "v", g: 18, p: "1 bowl chole + 2 roti + half bowl palak", x: "Squeeze lemon on palak.", n: ["iron", "zinc", "vitc", "folate", "calcium"] },
+    { t: "Dal tadka + methi roti", d: "v", g: 14, p: "1 big bowl dal + 2 methi rotis", x: "Mix fresh methi in dough.", n: ["iron", "calcium", "folate"] },
+    { t: "Chicken curry + rice", d: "n", g: 25, p: "3 pieces chicken + 1 bowl rice", x: "Home style, less oil.", n: ["b12", "iron", "zinc"] },
+    { t: "Egg curry + roti", d: "e", g: 16, p: "2 eggs in gravy + 2 roti", x: "Add peas to the gravy.", n: ["b12", "vitd", "iron"] }
   ],
   d: [
-      { t: "Moringa Soup + Moong Khichdi", d: "v", g: 12, m: "1 bowl soup + 1 bowl khichdi", v: "Light but packed with zinc and iron.", n: ["iron", "zinc", "vitc", "lympho", "rbc", "mch"] },
-      { t: "Khichdi + curd", d: "v", g: 12, m: "1 big bowl moong dal khichdi + 1 katori curd", v: "Put extra dal, less rice.", n: ["iron", "b12", "mag"] },
-    { t: "Paneer sabzi + roti", d: "v", g: 16, m: "1 bowl sabzi + 2 roti", v: "Palak paneer or matar paneer.", n: ["b12", "calcium", "iron", "folate"] },
-    { t: "Soya chunks pulao", d: "v", g: 18, m: "1 big bowl", v: "Add beans and carrots.", n: ["iron", "zinc", "mag"] },
-    { t: "Mixed dal + daliya", d: "v", g: 14, m: "1 bowl dal + 1 bowl cooked daliya", v: "Very light, high fibre.", n: ["iron", "mag", "folate"] },
-    { t: "Fish curry + rice", d: "n", g: 22, m: "2 pieces fish + 1 bowl rice", v: "Fish is great for Vit D and B12.", n: ["b12", "vitd"] }
+      { t: "Moringa (Drumstick) Dal", d: "v", g: 14, p: "1 bowl dal + 2 rotis", x: "Moringa is a superfood powerhouse for calcium and vitamins, easily absorbed in a dal base.", n: ["calcium", "vitc", "iron"] },
+      { t: "Moringa Soup + Moong Khichdi", d: "v", g: 12, p: "1 bowl soup + 1 bowl khichdi", x: "Light but packed with zinc and iron.", n: ["iron", "zinc", "vitc", "lympho", "rbc", "mch"] },
+      { t: "Khichdi + curd", d: "v", g: 12, p: "1 big bowl moong dal khichdi + 1 katori curd", x: "Put extra dal, less rice.", n: ["iron", "b12", "mag"] },
+    { t: "Paneer sabzi + roti", d: "v", g: 16, p: "1 bowl sabzi + 2 roti", x: "Palak paneer or matar paneer.", n: ["b12", "calcium", "iron", "folate"] },
+    { t: "Soya chunks pulao", d: "v", g: 18, p: "1 big bowl", x: "Add beans and carrots.", n: ["iron", "zinc", "mag"] },
+    { t: "Mixed dal + daliya", d: "v", g: 14, p: "1 bowl dal + 1 bowl cooked daliya", x: "Very light, high fibre.", n: ["iron", "mag", "folate"] },
+    { t: "Fish curry + rice", d: "n", g: 22, p: "2 pieces fish + 1 bowl rice", x: "Fish is great for Vit D and B12.", n: ["b12", "vitd"] }
   ],
   s: [
-      { t: "Amla Shot + Roasted Chana", d: "v", g: 6, m: "30ml amla juice + handful chana", v: "Immense Vitamin C boost for immunity.", n: ["vitc", "iron", "folate", "tlc", "neutro"] },
-      { t: "Roasted makhana & peanuts", d: "v", g: 6, m: "1 handful mixed", v: "Dry roast with a little salt.", n: ["mag", "calcium"] },
-    { t: "Fruit + mixed seeds", d: "v", g: 4, m: "1 apple/banana + 1 tbsp pumpkin/chia seeds", v: "Seeds are magnesium powerhouses.", n: ["mag", "zinc"] },
-    { t: "Sattu drink", d: "v", g: 6, m: "1 tall glass", v: "Mix roasted chana powder in water with jeera.", n: ["iron", "mag"] },
-    { t: "Sprouted moong chaat", d: "v", g: 7, m: "1 small bowl", v: "Raw sprouts, onion, tomato, lemon.", n: ["iron", "vitc", "folate"] }
+      { t: "Trail Mix: Makhana, Walnuts & Dates", d: "v", g: 5, p: "1 handful", x: "Roasted makhana and dates provide iron, while walnuts deliver a massive zinc boost.", n: ["zinc", "iron"] },
+      { t: "Fresh Guava with Black Salt", d: "v", g: 2, p: "1 medium guava", x: "Raw guava provides a massive Vitamin C boost for immune markers without heat degradation.", n: ["vitc", "tlc", "neutro"] },
+      { t: "Amla Shot + Roasted Chana", d: "v", g: 6, p: "30ml amla juice + handful chana", x: "Immense Vitamin C boost for immunity.", n: ["vitc", "iron", "folate", "tlc", "neutro"] },
+      { t: "Roasted makhana & peanuts", d: "v", g: 6, p: "1 handful mixed", x: "Dry roast with a little salt.", n: ["mag", "calcium"] },
+    { t: "Fruit + mixed seeds", d: "v", g: 4, p: "1 apple/banana + 1 tbsp pumpkin/chia seeds", x: "Seeds are magnesium powerhouses.", n: ["mag", "zinc"] },
+    { t: "Sattu drink", d: "v", g: 6, p: "1 tall glass", x: "Mix roasted chana powder in water with jeera.", n: ["iron", "mag"] },
+    { t: "Sprouted moong chaat", d: "v", g: 7, p: "1 small bowl", x: "Raw sprouts, onion, tomato, lemon.", n: ["iron", "vitc", "folate"] }
   ]
 };
 
