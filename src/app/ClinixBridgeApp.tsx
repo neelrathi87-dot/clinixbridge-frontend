@@ -22,10 +22,24 @@ const MARKERS = [
   { id: "folate", name: "Folate (B9)", unit: "ng/mL", keys: ["folate","folic acid"], low: 4.0, hi: 20.0, nut: "folate", why: "Works with B12 to make red blood cells. Low folate causes anemia and mouth ulcers.", crit: 2 },
   { id: "calcium", name: "Calcium", unit: "mg/dL", keys: ["calcium"], low: 8.5, hi: 10.5, nut: "calcium", why: "Builds bones. If low, your body steals it from your skeleton.", crit: 7.5 },
   { id: "mag", name: "Magnesium", unit: "mg/dL", keys: ["magnesium","mag"], low: 1.7, hi: 2.2, nut: "mag", why: "Controls muscle and nerve function. Low mag causes cramps, twitches, and bad sleep.", crit: 1.2 },
-  { id: "zinc", name: "Zinc", unit: "μg/dL", keys: ["zinc"], low: 70, hi: 120, nut: "zinc", why: "Crucial for immunity and healing. Low zinc leads to frequent colds and skin issues.", crit: 50 }
-];
+  { id: "zinc", name: "Zinc", unit: "μg/dL", keys: ["zinc"], low: 70, hi: 120, nut: "zinc", why: "Crucial for immunity and healing. Low zinc leads to frequent colds and skin issues.", crit: 50 },
+    { id:"tlc", name:"Total Leukocyte (WBC)", unit:"cumm", keys: ["tlc", "total leukocyte", "wbc", "white blood cell"], low:4800, hi:10800, crit:3500, nut:"vitc", why:"Measures overall immune health. Low values risk infection; high indicates acute stress." },
+    { id:"neutro", name:"Neutrophils", unit:"%", keys: ["neutrophils", "neutro"], low:40, hi:80, crit:20, nut:"vitc", why:"First responders to bacterial infections in the body." },
+    { id:"lympho", name:"Lymphocytes", unit:"%", keys: ["lymphocytes", "lympho"], low:20, hi:40, crit:10, nut:"zinc", why:"Vital for viral defense and creating protective antibodies." },
+    { id:"eosino", name:"Eosinophils", unit:"%", keys: ["eosinophils", "eosino"], low:1, hi:6, crit:0, nut:"iron", why:"Elevated levels typically indicate allergic responses or parasitic infections." },
+    { id:"mono", name:"Monocytes", unit:"%", keys: ["monocytes", "mono"], low:2, hi:10, crit:1, nut:"iron", why:"Cleans up dead cells and boosts the immune response." },
+    { id:"baso", name:"Basophils", unit:"%", keys: ["basophils", "baso"], low:0, hi:2, crit:0, nut:"iron", why:"Involved in inflammatory reactions and allergic responses." },
+    { id:"rbc", name:"Total RBC Count", unit:"mil/cumm", keys: ["rbc", "total rbc", "red blood cell"], low:4.5, hi:5.5, crit:3.5, nut:"iron", why:"Carries oxygen through the body. Low values point to chronic hypoxia or anemia." },
+    { id:"hct", name:"Hematocrit (HCT)", unit:"%", keys: ["hct", "hematocrit"], low:40, hi:50, crit:30, nut:"iron", why:"Percentage of blood volume that consists of red blood cells." },
+    { id:"mcv", name:"MCV", unit:"fL", keys: ["mcv"], low:83, hi:101, crit:75, nut:"b12", why:"Measures the physical size of RBCs. High points to macrocytic anemia (B12 lack)." },
+    { id:"mch", name:"MCH", unit:"Pg", keys: ["mch"], low:27, hi:32, crit:24, nut:"iron", why:"Calculates the absolute amount of hemoglobin per red blood cell." },
+    { id:"mchc", name:"MCHC", unit:"%", keys: ["mchc"], low:31.5, hi:34.5, crit:28, nut:"iron", why:"Calculates the concentration of hemoglobin in RBCs." }
+  ];
 
-const SAMPLE: any = { hb: 11.2, ferritin: 18, vitd: 16, b12: 182, folate: 3.2, calcium: 8.8, mag: 1.5, zinc: 65 };
+const SAMPLE: any = { 
+  hb: 15, ferritin: 14, vitd: 16, b12: 182, folate: 6.1, calcium: 9.1, mag: 1.6, zinc: 64, alb: 4.1, plt: 3.5,
+  tlc: 5100, neutro: 79, lympho: 18, eosino: 1, mono: 1, baso: 1, rbc: 5, hct: 42, mcv: 84.0, mch: 30.0, mchc: 35.7 
+};
 const SAMPLE_HISTORY = [
   { date: "2024-03-12", vals: { hb: 10.1, ferritin: 12, vitd: 12, b12: 140, folate: 2.5, calcium: 8.4, mag: 1.3, zinc: 55 } },
   { date: "2024-06-15", vals: { hb: 11.2, ferritin: 18, vitd: 16, b12: 182, folate: 3.2, calcium: 8.8, mag: 1.5, zinc: 65 } }
@@ -738,7 +752,7 @@ export default function ClinixBridgeApp() {
 
       <div className="glass" style={{ display: "grid", gap: "10px" }}>
         <span className="label">Don&apos;t have a report?</span>
-        <button className="btn ghost" onClick={() => setVals({ hb: 11.2, ferritin: 18, vitd: 16, b12: 182, folate: 3.2, calcium: 8.8, mag: 1.5, zinc: 65 })}>Load example</button>
+        <button className="btn ghost" onClick={() => setVals({ ...SAMPLE })}>Load example</button>
       </div>
     </>
   );
