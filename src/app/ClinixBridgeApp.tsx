@@ -15,14 +15,14 @@ const FOODS: any = {
 };
 
 const MARKERS = [
-  { id: "hb", name: "Haemoglobin", unit: "g/dL", low: { M: 13.0, F: 12.0 }, hi: { M: 17.0, F: 15.0 }, nut: "iron", why: "Carries oxygen. Low hb means fatigue and weakness.", crit: { M: 10, F: 9 } },
-  { id: "ferritin", name: "Ferritin", unit: "ng/mL", low: 30, hi: { M: 400, F: 150 }, nut: "iron", why: "Your iron storage. It runs out before hb drops. Low ferritin causes hair fall and exhaustion.", crit: 15 },
-  { id: "vitd", name: "Vitamin D", unit: "ng/mL", low: 30, hi: 100, nut: "vitd", why: "Needed to absorb calcium. Low vit D causes bone pain, weak immunity, and tiredness.", crit: 12 },
-  { id: "b12", name: "Vitamin B12", unit: "pg/mL", low: 300, hi: 900, nut: "b12", why: "Vital for nerves and brain. Low B12 causes tingling, memory issues, and extreme fatigue.", crit: 150 },
-  { id: "folate", name: "Folate (B9)", unit: "ng/mL", low: 4.0, hi: 20.0, nut: "folate", why: "Works with B12 to make red blood cells. Low folate causes anemia and mouth ulcers.", crit: 2 },
-  { id: "calcium", name: "Calcium", unit: "mg/dL", low: 8.5, hi: 10.5, nut: "calcium", why: "Builds bones. If low, your body steals it from your skeleton.", crit: 7.5 },
-  { id: "mag", name: "Magnesium", unit: "mg/dL", low: 1.7, hi: 2.2, nut: "mag", why: "Controls muscle and nerve function. Low mag causes cramps, twitches, and bad sleep.", crit: 1.2 },
-  { id: "zinc", name: "Zinc", unit: "μg/dL", low: 70, hi: 120, nut: "zinc", why: "Crucial for immunity and healing. Low zinc leads to frequent colds and skin issues.", crit: 50 }
+  { id: "hb", name: "Haemoglobin", unit: "g/dL", keys: ["haemoglobin","hemoglobin","hb"], low: { M: 13.0, F: 12.0 }, hi: { M: 17.0, F: 15.0 }, nut: "iron", why: "Carries oxygen. Low hb means fatigue and weakness.", crit: { M: 10, F: 9 } },
+  { id: "ferritin", name: "Ferritin", unit: "ng/mL", keys: ["ferritin"], low: 30, hi: { M: 400, F: 150 }, nut: "iron", why: "Your iron storage. It runs out before hb drops. Low ferritin causes hair fall and exhaustion.", crit: 15 },
+  { id: "vitd", name: "Vitamin D", unit: "ng/mL", keys: ["vitamin d","25-oh","25 oh","vit d"], low: 30, hi: 100, nut: "vitd", why: "Needed to absorb calcium. Low vit D causes bone pain, weak immunity, and tiredness.", crit: 12 },
+  { id: "b12", name: "Vitamin B12", unit: "pg/mL", keys: ["vitamin b12","b12","cobalamin"], low: 300, hi: 900, nut: "b12", why: "Vital for nerves and brain. Low B12 causes tingling, memory issues, and extreme fatigue.", crit: 150 },
+  { id: "folate", name: "Folate (B9)", unit: "ng/mL", keys: ["folate","folic acid"], low: 4.0, hi: 20.0, nut: "folate", why: "Works with B12 to make red blood cells. Low folate causes anemia and mouth ulcers.", crit: 2 },
+  { id: "calcium", name: "Calcium", unit: "mg/dL", keys: ["calcium"], low: 8.5, hi: 10.5, nut: "calcium", why: "Builds bones. If low, your body steals it from your skeleton.", crit: 7.5 },
+  { id: "mag", name: "Magnesium", unit: "mg/dL", keys: ["magnesium","mag"], low: 1.7, hi: 2.2, nut: "mag", why: "Controls muscle and nerve function. Low mag causes cramps, twitches, and bad sleep.", crit: 1.2 },
+  { id: "zinc", name: "Zinc", unit: "μg/dL", keys: ["zinc"], low: 70, hi: 120, nut: "zinc", why: "Crucial for immunity and healing. Low zinc leads to frequent colds and skin issues.", crit: 50 }
 ];
 
 const SAMPLE: any = { hb: 11.2, ferritin: 18, vitd: 16, b12: 182, folate: 3.2, calcium: 8.8, mag: 1.5, zinc: 65 };
@@ -89,6 +89,7 @@ export default function ClinixBridgeApp() {
   const [reports, setReports] = useState<any[]>([]);
   const [energy, setEnergy] = useState<Record<string, number>>({"0": 3, "1": 4, "2": 2});
   const [file, setFile] = useState<string | null>(null);
+  const [pastedText, setPastedText] = useState("");
 
   useEffect(() => {
     async function initAuth() {
@@ -631,6 +632,25 @@ export default function ClinixBridgeApp() {
     );
   };
   // --- TAB 1: REPORT ---
+  
+  const handleParseText = () => {
+    const lower = pastedText.toLowerCase();
+    let found = 0;
+    const newVals = { ...vals };
+    MARKERS.forEach(m => {
+      if (m.keys) {
+        for (const k of m.keys) {
+          const re = new RegExp(k.replace(/[.*+?^${}()|[\]\\]/g, "\\const renderReport = () => (") + "[^0-9\\n]{0,40}?(\\d+(?:\\.\\d+)?)", "i");
+          const r = lower.match(re);
+          if (r) { newVals[m.id] = parseFloat(r[1]); found++; break; }
+        }
+      }
+    });
+    setVals(newVals);
+    if(found > 0) alert(`Found ${found} values!`);
+    else alert(`No values found. Try one per line.`);
+  };
+
   const renderReport = () => (
     <>
       <label className="drop" htmlFor="file">
@@ -658,8 +678,8 @@ export default function ClinixBridgeApp() {
       )}
       <details className="glass">
         <summary>Or paste the report text</summary>
-        <textarea id="paste" placeholder="Haemoglobin 11.2 g/dL&#10;Vitamin D (25-OH) 16 ng/mL&#10;Vitamin B12 182 pg/mL"></textarea>
-        <button className="btn ghost" id="parse">Read values</button>
+        <textarea id="paste" placeholder="Haemoglobin 11.2 g/dL&#10;Vitamin D (25-OH) 16 ng/mL&#10;Vitamin B12 182 pg/mL" value={pastedText} onChange={(e) => setPastedText(e.target.value)}></textarea>
+        <button className="btn ghost" id="parse" onClick={handleParseText}>Read values</button>
       </details>
       
       <div className="glass" style={{ display: "grid", gap: "10px" }}>
