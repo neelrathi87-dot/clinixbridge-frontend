@@ -122,6 +122,7 @@ export default function ClinixBridgeApp() {
   const [energy, setEnergy] = useState<Record<string, number>>({"0": 3, "1": 4, "2": 2});
   const [files, setFiles] = useState<File[]>([]);
   const [symptoms, setSymptoms] = useState<string[]>([]);
+  const [lifestyle, setLifestyle] = useState("");
   const [pastedText, setPastedText] = useState("");
 
   useEffect(() => {
@@ -694,12 +695,44 @@ export default function ClinixBridgeApp() {
   };
 
   const renderReport = () => {
+    
+    const LIFESTYLE_REC: Record<string, string> = {
+      vegan: "Vit B12 & Iron",
+      desk: "Vit D & Calcium",
+      gym: "Magnesium, Zinc & CBC"
+    };
     const recTests = Array.from(new Set(symptoms.flatMap(s => SYMPTOMS_LIST.find(x => x.id === s)?.tests || [])));
     return (
     <>
       
-        <div className="glass" style={{ display: "grid", gap: "10px", marginBottom: "12px" }}>
-          <span className="label">What are you feeling? (Symptom Triage)</span>
+        
+          <div className="glass" style={{ display: "grid", gap: "10px", marginBottom: "12px" }}>
+            <span className="label">Lifestyle Risk Profile</span>
+            <div className="relative">
+              <select
+                value={lifestyle}
+                onChange={(e) => setLifestyle(e.target.value)}
+                className="w-full appearance-none bg-white border-2 border-[#111] rounded-[12px] px-4 py-3 text-[14px] font-bold text-[#111] shadow-[4px_4px_0_#111] focus:outline-none focus:translate-y-[2px] focus:shadow-[2px_2px_0_#111] transition-all cursor-pointer"
+              >
+                <option value="" disabled>Select your primary lifestyle...</option>
+                <option value="vegan">Strict Vegetarian / Vegan</option>
+                <option value="desk">Indoor Desk Job (Low Sun)</option>
+                <option value="gym">High-Intensity / Gym Goer</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#111]">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+              </div>
+            </div>
+            
+            {lifestyle && (
+              <div style={{ background: "#FFDE59", border: "2px solid var(--ink)", borderBottomWidth: "4px", borderRadius: "12px", padding: "12px", marginTop: "4px", fontSize: "14px", fontWeight: 600 }}>
+                Based on your lifestyle, please upload:<br/> {LIFESTYLE_REC[lifestyle]}
+              </div>
+            )}
+          </div>
+
+          <div className="glass" style={{ display: "grid", gap: "10px", marginBottom: "12px" }}>
+            <span className="label">What are you feeling? (Symptom Triage)</span>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
             {SYMPTOMS_LIST.map(s => {
               const active = symptoms.includes(s.id);
