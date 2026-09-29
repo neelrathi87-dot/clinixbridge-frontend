@@ -45,7 +45,14 @@ const SAMPLE_HISTORY = [
   { date: "2024-06-15", vals: { hb: 11.2, ferritin: 18, vitd: 16, b12: 182, folate: 3.2, calcium: 8.8, mag: 1.5, zinc: 65 } }
 ];
 
-const ADDONS = [
+
+  const SYMPTOMS_LIST = [
+    { id: "fatigue", label: "Severe Fatigue", tests: ["CBC", "Iron Profile"] },
+    { id: "joint", label: "Joint/Muscle Pain", tests: ["Vitamin D", "Calcium"] },
+    { id: "hair", label: "Hair Loss", tests: ["Zinc", "Iron Profile"] }
+  ];
+
+  const ADDONS = [
   { id: "curd", t: "1 katori curd", g: 4, d: "v" },
   { id: "milk", t: "1 glass milk", g: 8, d: "v" },
   { id: "paneer", t: "Few paneer cubes", g: 6, d: "v" },
@@ -102,7 +109,8 @@ export default function ClinixBridgeApp() {
   const [addon, setAddon] = useState<Record<string, string[]>>({"0":["curd"],"1":["egg","milk"]});
   const [reports, setReports] = useState<any[]>([]);
   const [energy, setEnergy] = useState<Record<string, number>>({"0": 3, "1": 4, "2": 2});
-  const [file, setFile] = useState<string | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [symptoms, setSymptoms] = useState<string[]>([]);
   const [pastedText, setPastedText] = useState("");
 
   useEffect(() => {
@@ -654,7 +662,7 @@ export default function ClinixBridgeApp() {
     MARKERS.forEach(m => {
       if (m.keys) {
         for (const k of m.keys) {
-          const re = new RegExp(k.replace(/[.*+?^${}()|[\]\\]/g, "\\const renderReport = () => (") + "[^0-9\\n]{0,40}?(\\d+(?:\\.\\d+)?)", "i");
+          const re = new RegExp(k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[^0-9\\n]{0,40}?(\\d+(?:\\.\\d+)?)", "i");
           const r = lower.match(re);
           if (r) { newVals[m.id] = parseFloat(r[1]); found++; break; }
         }
@@ -665,9 +673,35 @@ export default function ClinixBridgeApp() {
     else alert(`No values found. Try one per line.`);
   };
 
-  const renderReport = () => (
+  const renderReport = () => {
+    const recTests = Array.from(new Set(symptoms.flatMap(s => SYMPTOMS_LIST.find(x => x.id === s)?.tests || [])));
+    return (
     <>
-      <label className="drop" htmlFor="file">
+      
+        <div className="glass" style={{ display: "grid", gap: "10px", marginBottom: "12px" }}>
+          <span className="label">What are you feeling? (Symptom Triage)</span>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+            {SYMPTOMS_LIST.map(s => {
+              const active = symptoms.includes(s.id);
+              return (
+                <button 
+                  key={s.id} 
+                  className={active ? "btn" : "btn ghost"} 
+                  style={{ borderRadius: "99px", padding: "6px 12px", fontSize: "14px", border: active ? "2px solid #111" : "2px solid transparent" }}
+                  onClick={() => setSymptoms(prev => active ? prev.filter(x => x !== s.id) : [...prev, s.id])}
+                >
+                  {s.label}
+                </button>
+              );
+            })}
+          </div>
+          {recTests.length > 0 && (
+            <div style={{ background: "#FFDE59", border: "2px solid var(--ink)", borderBottomWidth: "4px", borderRadius: "12px", padding: "12px", marginTop: "4px", fontSize: "14px", fontWeight: 600 }}>
+              Based on your symptoms, please upload:<br/> {recTests.join(", ")}
+            </div>
+          )}
+        </div>
+        <label className="drop" htmlFor="file">
         <span className="ic">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/>
@@ -676,20 +710,28 @@ export default function ClinixBridgeApp() {
         <b>Drop your blood report</b>
         <span>PDF or photo · CBC, Vit D, B12, iron profile</span>
       </label>
-      <input type="file" id="file" accept=".pdf,image/*" hidden onChange={async (e) => {
-        const selectedFile = e.target.files?.[0];
-        if (selectedFile) {
-          setFile(selectedFile.name);
-          const { data, error } = await supabase.storage.from('lab_reports').upload(`${Date.now()}_${selectedFile.name}`, selectedFile);
-          if (error) console.error("Upload error:", error);
-          else console.log("Uploaded successfully:", data);
-        }
-      }} />
-      {file && (
-        <div className="filenote">
-          <b>{file}</b> received. In the full app, AI reads the values for you. In this prototype, check or type them below.
-        </div>
-      )}
+      <input type="file" id="file" accept=".pdf,image/*" multiple hidden onChange={async (e) => {
+          const selectedFiles = Array.from(e.target.files || []);
+          if (selectedFiles.length > 0) {
+            setFiles(prev => [...prev, ...selectedFiles]);
+            for (const f of selectedFiles) {
+              const { data, error } = await supabase.storage.from('lab_reports').upload(`${Date.now()}_${f.name}`, f);
+              if (error) console.error("Upload error:", error);
+              else console.log("Uploaded successfully:", data);
+            }
+          }
+        }} />
+      {files.length > 0 && (
+          <div className="glass" style={{ textAlign: "left", padding: "12px", marginTop: "12px", display: "grid", gap: "6px" }}>
+            <div style={{ fontWeight: 600, color: "var(--ink)" }}>Attached files:</div>
+            {files.map((f, i) => (
+              <div key={i} style={{ fontSize: "13px", color: "var(--ink)", display: "flex", alignItems: "center", gap: "6px" }}>
+                📄 {f.name}
+              </div>
+            ))}
+            <span style={{ fontSize: "12px", color: "var(--dim)", marginTop: "4px" }}>Ready for scan.</span>
+          </div>
+        )}
       <details className="glass">
         <summary>Or paste the report text</summary>
         <textarea id="paste" placeholder="Haemoglobin 11.2 g/dL&#10;Vitamin D (25-OH) 16 ng/mL&#10;Vitamin B12 182 pg/mL" value={pastedText} onChange={(e) => setPastedText(e.target.value)}></textarea>
@@ -756,6 +798,7 @@ export default function ClinixBridgeApp() {
       </div>
     </>
   );
+  };
 
   // --- TAB 2: SCAN ---
   const renderScan = () => {
